@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Save, Eye, Edit, HelpCircle, Plus, Trash2 } from 'lucide-react';
 import EmojiSizeControl from './components/EmojiSizeControl';
+import SectionNavigation from './components/SectionNavigation';
 
 // Behandelaar invoerscherm voor Neuropsychologisch Dashboard
 const BehandelaarInvoer = () => {
@@ -619,19 +620,11 @@ const BehandelaarInvoer = () => {
 
       <div className="container mx-auto p-4">
         {/* Navigatie tussen secties */}
-        <div className="mb-6 bg-white rounded-lg shadow p-4">
-          <div className="flex overflow-x-auto space-x-2 pb-2">
-            {sections.map(section => (
-              <button
-                key={section.id}
-                className={`px-4 py-2 rounded-md whitespace-nowrap ${activeSection === section.id ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-                onClick={() => setActiveSection(section.id)}
-              >
-                {section.label}
-              </button>
-            ))}
-          </div>
-        </div>
+        <SectionNavigation 
+          sections={sections}
+          activeSection={activeSection}
+          setActiveSection={setActiveSection}
+        />
 
         {/* Hoofdinhoud - formulier of preview */}
         <div className="bg-white rounded-lg shadow p-6">
