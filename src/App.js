@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Save, Eye, Edit } from 'lucide-react'; // Verwijder HelpCircle import
+import { ChevronLeft, ChevronRight, Save, Eye, Edit, HelpCircle } from 'lucide-react'; // Voeg HelpCircle import weer toe
 import SectionNavigation from './components/SectionNavigation';
 import DashboardHeader from './components/DashboardHeader';
 import BasicInfoForm from './components/BasicInfoForm';
@@ -11,9 +11,9 @@ import { getIQNiveau, getIQKleur, getIQPositie } from './utils/iqCalculations';
 import { getEmojiSizeClass } from './utils/emojiUtils';
 import beschrijvingOpties from './config/beschrijvingOpties';
 import useFormData from './hooks/useFormData';
-import PatientInfoCard from './components/preview/PatientInfoCard'; // Importeer preview component
-import IntelligenceResultsCard from './components/preview/IntelligenceResultsCard'; // Importeer preview component
-import ConclusieCard from './components/preview/ConclusieCard'; // Importeer preview component
+import PatientInfoCard from './components/preview/PatientInfoCard';
+import IntelligenceResultsCard from './components/preview/IntelligenceResultsCard';
+import ConclusieCard from './components/preview/ConclusieCard';
 
 
 // Behandelaar invoerscherm voor Neuropsychologisch Dashboard
