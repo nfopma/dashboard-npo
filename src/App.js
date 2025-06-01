@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Save, Eye, Edit, HelpCircle, Plus, Trash2 } 
 import EmojiSizeControl from './components/EmojiSizeControl';
 import SectionNavigation from './components/SectionNavigation';
 import DashboardHeader from './components/DashboardHeader'; // Importeer het nieuwe component
+import BasicInfoForm from './components/BasicInfoForm'; // Importeer het nieuwe component
 
 // Behandelaar invoerscherm voor Neuropsychologisch Dashboard
 const BehandelaarInvoer = () => {
@@ -10,7 +11,7 @@ const BehandelaarInvoer = () => {
   const [activeSection, setActiveSection] = useState('basisgegevens');
   const [previewMode, setPreviewMode] = useState(false);
   const [emojiSize, setEmojiSize] = useState(2); // 1=klein, 2=medium, 3=groot, 4=extra groot
-  
+
   // Voorbeeld formuliergegevens - zou in praktijk state management gebruiken (Redux, Context)
   const [formData, setFormData] = useState({
     basisgegevens: {
@@ -143,7 +144,7 @@ const BehandelaarInvoer = () => {
       ...prev,
       behandeling: {
         ...prev.behandeling,
-        praktischeAdviezen: prev.behandeling.praktischeAdviezen.map((advies, i) => 
+        praktischeAdviezen: prev.behandeling.praktischeAdviezen.map((advies, i) =>
           i === index ? { ...advies, [field]: value } : advies
         )
       }
@@ -176,7 +177,7 @@ const BehandelaarInvoer = () => {
       ...prev,
       conclusie: {
         ...prev.conclusie,
-        belangrijksteBevindingen: prev.conclusie.belangrijksteBevindingen.map((bevinding, i) => 
+        belangrijksteBevindingen: prev.conclusie.belangrijksteBevindingen.map((bevinding, i) =>
           i === index ? { ...bevinding, [field]: value } : bevinding
         )
       }
@@ -201,7 +202,7 @@ const BehandelaarInvoer = () => {
   const updateKlacht = (index, field, value) => {
     setFormData(prev => ({
       ...prev,
-      klachten: prev.klachten.map((klacht, i) => 
+      klachten: prev.klachten.map((klacht, i) =>
         i === index ? { ...klacht, [field]: value } : klacht
       )
     }));
@@ -210,7 +211,7 @@ const BehandelaarInvoer = () => {
   // Opleidingsniveau opties
   const opleidingsniveauOpties = [
     'Basisonderwijs',
-    'Vmbo, mbo1, avo onderbouw', 
+    'Vmbo, mbo1, avo onderbouw',
     'Havo, vwo, mbo',
     'Hbo, wo bachelor',
     'Wo, master, doctor'
@@ -259,7 +260,7 @@ const BehandelaarInvoer = () => {
     intelligentie: [
       { emoji: '💬', label: 'Verbaal' },
       { emoji: '👁️', label: 'Visueel' },
-      { emoji: '🧩', label: 'Werkgeheugen' }, 
+      { emoji: '🧩', label: 'Werkgeheugen' },
       { emoji: '⚡', label: 'Snelheid' },
       { emoji: '🧠', label: 'Totaal IQ' },
       { emoji: '🧮', label: 'Rekenen' }
@@ -304,7 +305,7 @@ const BehandelaarInvoer = () => {
       beschrijvingDefault: 'Talige kennis, redeneervermogen, woordenschat, jezelf uitdrukken'
     },
     {
-      key: 'perceptueelRedeneren', 
+      key: 'perceptueelRedeneren',
       label: 'Perceptueel Redeneren',
       emoji: '👁️',
       beschrijvingDefault: 'Visueel-analytisch oplossingsvermogen, planning, overzicht'
@@ -312,7 +313,7 @@ const BehandelaarInvoer = () => {
     {
       key: 'werkgeheugen',
       label: 'Werkgeheugen',
-      emoji: '🧩', 
+      emoji: '🧩',
       beschrijvingDefault: 'Informatie tijdelijk vasthouden, \'iets\' doen en tot een resultaat komen'
     },
     {
@@ -368,7 +369,7 @@ const BehandelaarInvoer = () => {
     // IQ schaal: 50-150 verdeeld over 7 gelijke segmenten
     // Elk segment = (150-50)/7 = ~14.3 punten = 14.29% van de schaal
     const segmentBreedte = 100 / 7; // 14.29%
-    
+
     if (iqScore <= 50) return 0;
     if (iqScore <= 64) return ((iqScore - 50) / 14) * segmentBreedte;
     if (iqScore <= 79) return segmentBreedte + ((iqScore - 65) / 14) * segmentBreedte;
@@ -387,14 +388,14 @@ const BehandelaarInvoer = () => {
         <span className="mr-2">{categorie.emoji}</span>
         {categorie.label}
       </h3>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             IQ Score
           </label>
-          <input 
-            type="number" 
+          <input
+            type="number"
             min="50"
             max="150"
             className="w-full p-2 border rounded-md"
@@ -402,13 +403,13 @@ const BehandelaarInvoer = () => {
             onChange={(e) => updateScore(categorie.key, 'iqScore', parseInt(e.target.value) || 0)}
           />
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Betrouwbaarheidsinterval - Links
           </label>
-          <input 
-            type="number" 
+          <input
+            type="number"
             min="50"
             max="150"
             className="w-full p-2 border rounded-md"
@@ -416,13 +417,13 @@ const BehandelaarInvoer = () => {
             onChange={(e) => updateScore(categorie.key, 'betrouwbaarheidsLinks', parseInt(e.target.value) || 0)}
           />
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Betrouwbaarheidsinterval - Rechts
           </label>
-          <input 
-            type="number" 
+          <input
+            type="number"
             min="50"
             max="150"
             className="w-full p-2 border rounded-md"
@@ -431,7 +432,7 @@ const BehandelaarInvoer = () => {
           />
         </div>
       </div>
-      
+
       {/* Extra vraag voor Totaal IQ: Disharmonisch? */}
       {categorie.key === 'totaalIQ' && (
         <div className="mb-4">
@@ -451,7 +452,7 @@ const BehandelaarInvoer = () => {
           </p>
         </div>
       )}
-      
+
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Beschrijving (eenvoudige taal)
@@ -470,7 +471,7 @@ const BehandelaarInvoer = () => {
             <option key={idx} value={optie}>{optie}</option>
           ))}
         </select>
-        <textarea 
+        <textarea
           className="w-full p-2 border rounded-md"
           rows="2"
           placeholder="Of voer een aangepaste beschrijving in"
@@ -483,7 +484,7 @@ const BehandelaarInvoer = () => {
       {!(categorie.key === 'totaalIQ' && data.disharmonisch === 'Nee') && (
         <div className="border-2 border-blue-200 rounded-lg p-3 bg-blue-50">
           <h4 className="font-medium mb-2 text-blue-800">Preview van score-weergave</h4>
-          
+
           <div className="mb-2">
             <div className="flex justify-between mb-1">
               <span className="font-medium">
@@ -493,7 +494,7 @@ const BehandelaarInvoer = () => {
                 IQ: {data.iqScore} ({getIQNiveau(data.iqScore)})
               </span>
             </div>
-            
+
             {/* IQ schaal visualisatie (50-150 range, 7 segmenten) */}
             <div className="relative h-12 w-full rounded overflow-hidden mb-1">
               {/* Kleurenschaal achtergrond voor 7 IQ segmenten */}
@@ -506,7 +507,7 @@ const BehandelaarInvoer = () => {
                 <div className="flex-1 bg-green-500"></div>
                 <div className="flex-1 bg-green-600"></div>
               </div>
-              
+
               {/* Labels onder de schaal */}
               <div className="absolute inset-0 flex text-xs text-white font-bold">
                 <div className="flex-1 flex justify-center items-end pb-1">50-64</div>
@@ -517,31 +518,31 @@ const BehandelaarInvoer = () => {
                 <div className="flex-1 flex justify-center items-end pb-1">121-135</div>
                 <div className="flex-1 flex justify-center items-end pb-1">136-150</div>
               </div>
-              
+
               {/* Betrouwbaarheidsinterval */}
-              <div 
-                className="absolute top-2 h-3 bg-white opacity-40 rounded" 
-                style={{ 
-                  left: `${getIQPositie(data.betrouwbaarheidsLinks)}%`, 
-                  width: `${getIQPositie(data.betrouwbaarheidsRechts) - getIQPositie(data.betrouwbaarheidsLinks)}%` 
+              <div
+                className="absolute top-2 h-3 bg-white opacity-40 rounded"
+                style={{
+                  left: `${getIQPositie(data.betrouwbaarheidsLinks)}%`,
+                  width: `${getIQPositie(data.betrouwbaarheidsRechts) - getIQPositie(data.betrouwbaarheidsLinks)}%`
                 }}>
               </div>
-              
+
               {/* IQ score indicator (driehoek wijzer) */}
-              <div 
-                className="absolute" 
-                style={{ 
-                  left: `calc(${getIQPositie(data.iqScore)}% - 8px)`, 
-                  top: '0' 
+              <div
+                className="absolute"
+                style={{
+                  left: `calc(${getIQPositie(data.iqScore)}% - 8px)`,
+                  top: '0'
                 }}>
                 <div className="w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-black"></div>
               </div>
             </div>
-            
+
             <div className="flex justify-between text-xs text-gray-500 mb-2">
               <span>95% Betrouwbaarheidsinterval: {data.betrouwbaarheidsLinks} - {data.betrouwbaarheidsRechts}</span>
             </div>
-            
+
             <p className="text-sm text-gray-600 mt-1">{data.beschrijving}</p>
           </div>
         </div>
@@ -552,7 +553,7 @@ const BehandelaarInvoer = () => {
         <div className="border-2 border-orange-200 rounded-lg p-3 bg-orange-50">
           <h4 className="font-medium mb-2 text-orange-800">⚠️ Totaal IQ score verborgen</h4>
           <p className="text-sm text-orange-700">
-            Deze totaal IQ score wordt <strong>niet getoond</strong> in de visuele weergave omdat het profiel als disharmonisch is beoordeeld. 
+            Deze totaal IQ score wordt <strong>niet getoond</strong> in de visuele weergave omdat het profiel als disharmonisch is beoordeeld.
             Alleen de individuele subtestscores worden weergegeven.
           </p>
         </div>
@@ -588,7 +589,7 @@ const BehandelaarInvoer = () => {
   return (
     <div className="bg-gray-100 min-h-screen">
       {/* Header met titel en knoppen */}
-      <DashboardHeader 
+      <DashboardHeader
         previewMode={previewMode}
         setPreviewMode={setPreviewMode}
         emojiSize={emojiSize}
@@ -597,7 +598,7 @@ const BehandelaarInvoer = () => {
 
       <div className="container mx-auto p-4">
         {/* Navigatie tussen secties */}
-        <SectionNavigation 
+        <SectionNavigation
           sections={sections}
           activeSection={activeSection}
           setActiveSection={setActiveSection}
@@ -609,7 +610,7 @@ const BehandelaarInvoer = () => {
             <div className="border-2 border-green-500 rounded-lg p-4 mb-4">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-bold text-green-700">Preview Modus</h2>
-                <button 
+                <button
                   className="px-3 py-1 bg-green-600 text-white rounded-md text-sm flex items-center"
                   onClick={() => setPreviewMode(false)}
                 >
@@ -625,7 +626,7 @@ const BehandelaarInvoer = () => {
                   <p><span className="font-semibold">Naam:</span> {formData.basisgegevens.naam}</p>
                   <p><span className="font-semibold">Geboortedatum:</span> {new Date(formData.basisgegevens.geboortedatum).toLocaleDateString('nl-NL')}</p>
                 </div>
-                
+
                 <div className="mt-4 p-4 bg-green-50 rounded-lg">
                   <h3 className="font-bold mb-3 flex items-center">
                     <span className={`mr-2 ${getEmojiSizeClass('header')}`}>📋</span>Voorinformatie
@@ -636,7 +637,7 @@ const BehandelaarInvoer = () => {
                     <p><span className={`font-semibold ${getEmojiSizeClass('subheader')} mr-2`}>🍺</span><span className="font-semibold">Middelengebruik:</span> {formData.voorinformatie.middelengebruik || 'Niet ingevuld'}</p>
                   </div>
                 </div>
-                
+
                 <div className="mt-4 bg-gray-50 p-4 rounded-lg">
                   <h3 className="font-bold mb-2 flex items-center">
                     <span className={`mr-2 ${getEmojiSizeClass('header')}`}>⚠️</span>Klachten
@@ -650,7 +651,7 @@ const BehandelaarInvoer = () => {
                     ))}
                   </ul>
                 </div>
-                
+
                 <div className="mt-4 p-4 bg-orange-50 rounded-lg">
                   <h3 className="font-bold mb-3 flex items-center">
                     <span className={`mr-2 ${getEmojiSizeClass('header')}`}>⚖️</span>Beïnvloedende factoren
@@ -661,20 +662,20 @@ const BehandelaarInvoer = () => {
                     <p><span className={`font-semibold ${getEmojiSizeClass('subheader')} mr-2`}>✋</span><span className="font-semibold">Motorische snelheid:</span> {formData.beinvloedendeFactoren.motorischeSnelheid || 'Niet ingevuld'}</p>
                   </div>
                 </div>
-                
+
                 <div className="mt-4 bg-purple-50 p-4 rounded-lg">
                   <h3 className="font-bold mb-3 flex items-center">
                     <span className={`mr-2 ${getEmojiSizeClass('header')}`}>🧠</span>Intelligentie Test Resultaten
                   </h3>
-                  
+
                   {intelligentieCategorieen.map(categorie => {
                     const data = formData.intelligentie[categorie.key];
-                    
+
                     // Verberg totaal IQ in preview als disharmonisch = 'Nee'
                     if (categorie.key === 'totaalIQ' && data.disharmonisch === 'Nee') {
                       return null; // Toon deze niet in de preview
                     }
-                    
+
                     return (
                       <div key={categorie.key} className="mb-4 p-3 bg-white rounded-lg">
                         <div className="flex justify-between mb-2">
@@ -686,7 +687,7 @@ const BehandelaarInvoer = () => {
                             IQ: {data.iqScore} ({getIQNiveau(data.iqScore)})
                           </span>
                         </div>
-                        
+
                         {/* Mini versie van de IQ score visualisatie */}
                         <div className="relative h-8 w-full rounded overflow-hidden mb-2">
                           <div className="absolute inset-0 flex">
@@ -698,35 +699,35 @@ const BehandelaarInvoer = () => {
                             <div className="flex-1 bg-green-500"></div>
                             <div className="flex-1 bg-green-600"></div>
                           </div>
-                          
-                          <div 
-                            className="absolute top-1 h-2 bg-white opacity-40 rounded" 
-                            style={{ 
-                              left: `${getIQPositie(data.betrouwbaarheidsLinks)}%`, 
-                              width: `${getIQPositie(data.betrouwbaarheidsRechts) - getIQPositie(data.betrouwbaarheidsLinks)}%` 
+
+                          <div
+                            className="absolute top-1 h-2 bg-white opacity-40 rounded"
+                            style={{
+                              left: `${getIQPositie(data.betrouwbaarheidsLinks)}%`,
+                              width: `${getIQPositie(data.betrouwbaarheidsRechts) - getIQPositie(data.betrouwbaarheidsLinks)}%`
                             }}>
                           </div>
-                          
-                          <div 
-                            className="absolute" 
-                            style={{ 
-                              left: `calc(${getIQPositie(data.iqScore)}% - 6px)`, 
-                              top: '0' 
+
+                          <div
+                            className="absolute"
+                            style={{
+                              left: `calc(${getIQPositie(data.iqScore)}% - 6px)`,
+                              top: '0'
                             }}>
                             <div className="w-0 h-0 border-l-6 border-r-6 border-t-6 border-l-transparent border-r-transparent border-t-black"></div>
                           </div>
                         </div>
-                        
+
                         <div className="text-xs text-gray-400 mb-1">
                           95% BI: {data.betrouwbaarheidsLinks}-{data.betrouwbaarheidsRechts}
                         </div>
-                        
+
                         <p className="text-sm text-gray-600">{data.beschrijving}</p>
                       </div>
                     );
                   })}
                 </div>
-                
+
                 <div className="mt-4 p-4 bg-yellow-50 rounded-lg">
                   <h3 className="font-bold mb-3 flex items-center">
                     <span className={`mr-2 ${getEmojiSizeClass('header')}`}>🎯</span>Conclusie
@@ -745,7 +746,7 @@ const BehandelaarInvoer = () => {
                         ))}
                       </ul>
                     </div>
-                    
+
                     <div>
                       <h4 className="font-semibold mb-1 flex items-center">
                         <span className={`mr-2 ${getEmojiSizeClass('subheader')}`}>📋</span>DSM Classificatie:
@@ -756,7 +757,7 @@ const BehandelaarInvoer = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="mt-4 p-4 bg-teal-50 rounded-lg">
                   <h3 className="font-bold mb-3 flex items-center">
                     <span className={`mr-2 ${getEmojiSizeClass('header')}`}>🤝</span>Behandeling
@@ -781,76 +782,12 @@ const BehandelaarInvoer = () => {
             <>
               {/* Formulier sectie */}
               {activeSection === 'basisgegevens' && (
-                <div>
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold">👤 Basisgegevens</h2>
-                    <div className="text-sm text-gray-500">Stap 1 van 6</div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Naam patiënt
-                      </label>
-                      <input 
-                        type="text" 
-                        className="w-full p-2 border rounded-md"
-                        value={formData.basisgegevens.naam}
-                        onChange={(e) => updateFormData('basisgegevens', 'naam', e.target.value)}
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Geboortedatum
-                      </label>
-                      <input 
-                        type="date" 
-                        className="w-full p-2 border rounded-md"
-                        value={formData.basisgegevens.geboortedatum}
-                        onChange={(e) => updateFormData('basisgegevens', 'geboortedatum', e.target.value)}
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Onderzoeksdatum
-                      </label>
-                      <input 
-                        type="date" 
-                        className="w-full p-2 border rounded-md"
-                        value={formData.basisgegevens.onderzoeksdatum}
-                        onChange={(e) => updateFormData('basisgegevens', 'onderzoeksdatum', e.target.value)}
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Onderzoeker
-                      </label>
-                      <input 
-                        type="text" 
-                        className="w-full p-2 border rounded-md"
-                        value={formData.basisgegevens.onderzoeker}
-                        onChange={(e) => updateFormData('basisgegevens', 'onderzoeker', e.target.value)}
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Afdeling
-                      </label>
-                      <input 
-                        type="text" 
-                        className="w-full p-2 border rounded-md"
-                        value={formData.basisgegevens.afdeling}
-                        onChange={(e) => updateFormData('basisgegevens', 'afdeling', e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
+                <BasicInfoForm
+                  formData={formData.basisgegevens}
+                  updateFormData={updateFormData}
+                />
               )}
-              
+
               {activeSection === 'voorinformatie' && (
                 <div>
                   <div className="flex justify-between items-center mb-4">
@@ -860,7 +797,7 @@ const BehandelaarInvoer = () => {
                     </h2>
                     <div className="text-sm text-gray-500">Stap 2 van 7</div>
                   </div>
-                  
+
                   {/* Nieuwe extra vragen */}
                   <div className="mb-6 space-y-4">
                     <div>
@@ -880,12 +817,12 @@ const BehandelaarInvoer = () => {
                         ))}
                       </select>
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         🤕 Letsel
                       </label>
-                      <textarea 
+                      <textarea
                         className="w-full p-2 border rounded-md"
                         rows="3"
                         placeholder="Beschrijf eventuele letsels, hoofdtrauma's, neurologische aandoeningen, etc."
@@ -893,12 +830,12 @@ const BehandelaarInvoer = () => {
                         onChange={(e) => updateFormData('voorinformatie', 'letsel', e.target.value)}
                       ></textarea>
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         🍺 Middelengebruik (alcohol/drugs, historisch en huidig)
                       </label>
-                      <textarea 
+                      <textarea
                         className="w-full p-2 border rounded-md"
                         rows="3"
                         placeholder="Beschrijf huidig en historisch gebruik van alcohol, drugs, medicatie, etc."
@@ -907,11 +844,11 @@ const BehandelaarInvoer = () => {
                       ></textarea>
                     </div>
                   </div>
-                  
+
                   <div className="mb-6">
                     <div className="flex justify-between items-center mb-2">
                       <h3 className="font-bold">⚠️ Klachten</h3>
-                      <button 
+                      <button
                         className="text-blue-600 flex items-center text-sm"
                         onClick={addKlacht}
                       >
@@ -919,7 +856,7 @@ const BehandelaarInvoer = () => {
                         Klacht toevoegen
                       </button>
                     </div>
-                    
+
                     {formData.klachten.map((klacht, index) => (
                       <div key={index} className="flex items-start space-x-2 mb-2 p-2 border rounded bg-gray-50">
                         <div className="flex-grow-0">
@@ -935,16 +872,16 @@ const BehandelaarInvoer = () => {
                             ))}
                           </select>
                         </div>
-                        
-                        <input 
-                          type="text" 
+
+                        <input
+                          type="text"
                           className="flex-grow p-2 border rounded-md"
                           placeholder="Beschrijf de klacht"
                           value={klacht.tekst}
                           onChange={(e) => updateKlacht(index, 'tekst', e.target.value)}
                         />
-                        
-                        <button 
+
+                        <button
                           className="p-2 text-red-500"
                           onClick={() => removeKlacht(index)}
                         >
@@ -952,7 +889,7 @@ const BehandelaarInvoer = () => {
                         </button>
                       </div>
                     ))}
-                    
+
                     <div className="bg-blue-50 p-3 rounded-md mt-2 flex items-start">
                       <HelpCircle className="text-blue-500 mr-2 flex-shrink-0 mt-1" size={18} />
                       <p className="text-sm text-blue-700">
@@ -962,7 +899,7 @@ const BehandelaarInvoer = () => {
                   </div>
                 </div>
               )}
-              
+
               {activeSection === 'beinvloedendeFactoren' && (
                 <div>
                   <div className="flex justify-between items-center mb-4">
@@ -972,13 +909,13 @@ const BehandelaarInvoer = () => {
                     </h2>
                     <div className="text-sm text-gray-500">Stap 3 van 7</div>
                   </div>
-                  
+
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         💊 Medicatie
                       </label>
-                      <textarea 
+                      <textarea
                         className="w-full p-2 border rounded-md"
                         rows="3"
                         placeholder="Beschrijf huidige medicatie die mogelijk de testresultaten kan beïnvloeden"
@@ -986,12 +923,12 @@ const BehandelaarInvoer = () => {
                         onChange={(e) => updateFormData('beinvloedendeFactoren', 'medicatie', e.target.value)}
                       ></textarea>
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         📊 SCL uitkomsten
                       </label>
-                      <textarea 
+                      <textarea
                         className="w-full p-2 border rounded-md"
                         rows="3"
                         placeholder="Relevante uitkomsten van de SCL-90 of andere symptoom checklists"
@@ -999,12 +936,12 @@ const BehandelaarInvoer = () => {
                         onChange={(e) => updateFormData('beinvloedendeFactoren', 'sclUitkomsten', e.target.value)}
                       ></textarea>
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         ✋ Motorische snelheid
                       </label>
-                      <textarea 
+                      <textarea
                         className="w-full p-2 border rounded-md"
                         rows="3"
                         placeholder="Observaties over motorische vaardigheden die de testprestaties kunnen beïnvloeden"
@@ -1013,7 +950,7 @@ const BehandelaarInvoer = () => {
                       ></textarea>
                     </div>
                   </div>
-                  
+
                   <div className="bg-purple-50 p-3 rounded-md mt-4 flex items-start">
                     <HelpCircle className="text-purple-500 mr-2 flex-shrink-0 mt-1" size={18} />
                     <p className="text-sm text-purple-700">
@@ -1022,7 +959,7 @@ const BehandelaarInvoer = () => {
                   </div>
                 </div>
               )}
-              
+
               {activeSection === 'intelligentie' && (
                 <div>
                   <div className="flex justify-between items-center mb-4">
@@ -1032,7 +969,7 @@ const BehandelaarInvoer = () => {
                     </h2>
                     <div className="text-sm text-gray-500">Stap 4 van 7</div>
                   </div>
-                  
+
                   <div className="bg-blue-50 p-4 rounded-md mb-6 flex items-start">
                     <HelpCircle className="text-blue-500 mr-2 flex-shrink-0 mt-1" size={18} />
                     <div className="text-sm text-blue-700">
@@ -1048,24 +985,24 @@ const BehandelaarInvoer = () => {
                       </ul>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-6">
                     {intelligentieCategorieen.map(categorie => (
-                      <IntelligentieSubtest 
+                      <IntelligentieSubtest
                         key={categorie.key}
                         categorie={categorie}
                         data={formData.intelligentie[categorie.key]}
                       />
                     ))}
                   </div>
-                  
+
                   {/* Overzicht van alle IQ scores */}
                   <div className="mt-8 p-4 bg-purple-50 rounded-lg">
                     <h3 className="font-bold mb-4 text-purple-800">📊 Overzicht alle IQ scores</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {intelligentieCategorieen.map(categorie => {
                         const data = formData.intelligentie[categorie.key];
-                        
+
                         // Verberg totaal IQ als disharmonisch = 'Nee'
                         if (categorie.key === 'totaalIQ' && data.disharmonisch === 'Nee') {
                           return (
@@ -1087,7 +1024,7 @@ const BehandelaarInvoer = () => {
                             </div>
                           );
                         }
-                        
+
                         // Normale weergave voor andere scores en harmonisch totaal IQ
                         return (
                           <div key={categorie.key} className="bg-white p-3 rounded-lg border">
@@ -1105,10 +1042,10 @@ const BehandelaarInvoer = () => {
                             <div className="text-xs text-gray-400">
                               95% BI: {data.betrouwbaarheidsLinks}-{data.betrouwbaarheidsRechts}
                             </div>
-                            
+
                             {/* Mini IQ score bar */}
                             <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
-                              <div 
+                              <div
                                 className={`h-full ${getIQKleur(data.iqScore)} transition-all`}
                                 style={{ width: `${Math.max(5, Math.min(100, ((data.iqScore - 50) / 100) * 100))}%` }}
                               ></div>
@@ -1120,7 +1057,7 @@ const BehandelaarInvoer = () => {
                   </div>
                 </div>
               )}
-              
+
               {activeSection === 'executief' && (
                 <div>
                   <div className="flex justify-between items-center mb-4">
@@ -1130,13 +1067,13 @@ const BehandelaarInvoer = () => {
                     </h2>
                     <div className="text-sm text-gray-500">Stap 5 van 7</div>
                   </div>
-                  
+
                   <div className="bg-yellow-50 p-4 rounded-md text-center">
                     <p className="text-yellow-700">Deze sectie wordt binnenkort toegevoegd</p>
                   </div>
                 </div>
               )}
-              
+
               {activeSection === 'conclusie' && (
                 <div>
                   <div className="flex justify-between items-center mb-4">
@@ -1146,12 +1083,12 @@ const BehandelaarInvoer = () => {
                     </h2>
                     <div className="text-sm text-gray-500">Stap 6 van 7</div>
                   </div>
-                  
+
                   {/* Belangrijkste bevindingen sectie */}
                   <div className="mb-6">
                     <div className="flex justify-between items-center mb-2">
                       <h3 className="font-bold">🔍 Belangrijkste bevindingen</h3>
-                      <button 
+                      <button
                         className="text-blue-600 flex items-center text-sm"
                         onClick={addBevinding}
                       >
@@ -1159,7 +1096,7 @@ const BehandelaarInvoer = () => {
                         Bevinding toevoegen
                       </button>
                     </div>
-                    
+
                     {formData.conclusie.belangrijksteBevindingen.map((bevinding, index) => (
                       <div key={index} className="flex items-start space-x-2 mb-2 p-2 border rounded bg-gray-50">
                         <div className="flex-grow-0">
@@ -1175,16 +1112,16 @@ const BehandelaarInvoer = () => {
                             ))}
                           </select>
                         </div>
-                        
-                        <input 
-                          type="text" 
+
+                        <input
+                          type="text"
                           className="flex-grow p-2 border rounded-md"
                           placeholder="Beschrijf de belangrijkste bevinding"
                           value={bevinding.tekst}
                           onChange={(e) => updateBevinding(index, 'tekst', e.target.value)}
                         />
-                        
-                        <button 
+
+                        <button
                           className="p-2 text-red-500"
                           onClick={() => removeBevinding(index)}
                         >
@@ -1192,7 +1129,7 @@ const BehandelaarInvoer = () => {
                         </button>
                       </div>
                     ))}
-                    
+
                     <div className="bg-green-50 p-3 rounded-md mt-2 flex items-start">
                       <HelpCircle className="text-green-500 mr-2 flex-shrink-0 mt-1" size={18} />
                       <p className="text-sm text-green-700">
@@ -1200,18 +1137,18 @@ const BehandelaarInvoer = () => {
                       </p>
                     </div>
                   </div>
-                  
+
                   {/* DSM Classificatie sectie */}
                   <div className="mb-6">
                     <h3 className="font-bold mb-2">📋 DSM Classificatie</h3>
-                    <textarea 
+                    <textarea
                       className="w-full p-3 border rounded-md"
                       rows="4"
                       placeholder="Voer de DSM-5-TR classificatie in, inclusief code en beschrijving (bijv. F06.7 Lichte neurocognitieve stoornis)"
                       value={formData.conclusie.dsmClassificatie}
                       onChange={(e) => updateFormData('conclusie', 'dsmClassificatie', e.target.value)}
                     ></textarea>
-                    
+
                     <div className="bg-blue-50 p-3 rounded-md mt-2 flex items-start">
                       <HelpCircle className="text-blue-500 mr-2 flex-shrink-0 mt-1" size={18} />
                       <p className="text-sm text-blue-700">
@@ -1221,7 +1158,7 @@ const BehandelaarInvoer = () => {
                   </div>
                 </div>
               )}
-              
+
               {activeSection === 'behandeling' && (
                 <div>
                   <div className="flex justify-between items-center mb-4">
@@ -1231,12 +1168,12 @@ const BehandelaarInvoer = () => {
                     </h2>
                     <div className="text-sm text-gray-500">Stap 7 van 7</div>
                   </div>
-                  
+
                   {/* Praktische adviezen sectie */}
                   <div className="mb-6">
                     <div className="flex justify-between items-center mb-2">
                       <h3 className="font-bold">💡 Praktische adviezen voor de behandeling</h3>
-                      <button 
+                      <button
                         className="text-blue-600 flex items-center text-sm"
                         onClick={addAdvies}
                       >
@@ -1244,7 +1181,7 @@ const BehandelaarInvoer = () => {
                         Advies toevoegen
                       </button>
                     </div>
-                    
+
                     {formData.behandeling.praktischeAdviezen.map((advies, index) => (
                       <div key={index} className="flex items-start space-x-2 mb-2 p-2 border rounded bg-gray-50">
                         <div className="flex-grow-0">
@@ -1260,16 +1197,16 @@ const BehandelaarInvoer = () => {
                             ))}
                           </select>
                         </div>
-                        
-                        <input 
-                          type="text" 
+
+                        <input
+                          type="text"
                           className="flex-grow p-2 border rounded-md"
                           placeholder="Beschrijf het praktische advies voor behandeling/begeleiding"
                           value={advies.tekst}
                           onChange={(e) => updateAdvies(index, 'tekst', e.target.value)}
                         />
-                        
-                        <button 
+
+                        <button
                           className="p-2 text-red-500"
                           onClick={() => removeAdvies(index)}
                         >
@@ -1277,11 +1214,11 @@ const BehandelaarInvoer = () => {
                         </button>
                       </div>
                     ))}
-                    
+
                     <div className="bg-teal-50 p-3 rounded-md mt-2 flex items-start">
                       <HelpCircle className="text-teal-500 mr-2 flex-shrink-0 mt-1" size={18} />
                       <p className="text-sm text-teal-700">
-                        Formuleer concrete, uitvoerbare adviezen die aansluiten bij de neuropsychologische bevindingen. 
+                        Formuleer concrete, uitvoerbare adviezen die aansluiten bij de neuropsychologische bevindingen.
                         Focus op praktische interventies die de patiënt, familie en behandelteam kunnen implementeren.
                       </p>
                     </div>
@@ -1293,7 +1230,7 @@ const BehandelaarInvoer = () => {
 
           {/* Navigatieknoppen */}
           <div className="flex justify-between mt-6 pt-4 border-t">
-            <button 
+            <button
               className="px-4 py-2 bg-gray-200 rounded-md flex items-center disabled:opacity-50"
               onClick={prevSection}
               disabled={activeSection === sections[0].id}
@@ -1301,8 +1238,8 @@ const BehandelaarInvoer = () => {
               <ChevronLeft className="mr-2" size={18} />
               Vorige
             </button>
-            
-            <button 
+
+            <button
               className="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center disabled:opacity-50"
               onClick={nextSection}
               disabled={activeSection === sections[sections.length - 1].id}
