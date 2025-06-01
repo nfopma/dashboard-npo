@@ -262,7 +262,6 @@ const BehandelaarInvoer = () => {
     { id: 'voorinformatie', label: '📝 Voorinformatie' },
     { id: 'beinvloedendeFactoren', label: '⚖️ Beïnvloedende factoren' },
     { id: 'intelligentie', label: '🧠 Intelligentie' },
-    { id: 'executief', label: '⚙️ Executief Functioneren' },
     { id: 'conclusie', label: '🎯 Conclusie' },
     { id: 'behandeling', label: '🤝 Behandeling' }
   ];
@@ -441,22 +440,6 @@ const BehandelaarInvoer = () => {
                         );
                       })}
                     </div>
-                  </div>
-                </div>
-              )}
-
-              {activeSection === 'executief' && (
-                <div>
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold flex items-center">
-                      <span className="text-3xl mr-3">⚙️</span>
-                      Executief Functioneren
-                    </h2>
-                    <div className="text-sm text-gray-500">Stap 5 van 7</div>
-                  </div>
-
-                  <div className="bg-yellow-50 p-4 rounded-md text-center">
-                    <p className="text-yellow-700">Deze sectie wordt binnenkort toegevoegd</p>
                   </div>
                 </div>
               )}
