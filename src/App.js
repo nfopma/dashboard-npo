@@ -9,9 +9,8 @@ import ConclusieForm from './components/ConclusieForm';
 import BehandelingForm from './components/BehandelingForm';
 import { getIQNiveau, getIQKleur, getIQPositie } from './utils/iqCalculations';
 import { getEmojiSizeClass } from './utils/emojiUtils';
-import emojiOptions from './config/emojiOptions';
 import beschrijvingOpties from './config/beschrijvingOpties';
-import useFormData from './hooks/useFormData'; // Importeer de custom hook
+import useFormData from './hooks/useFormData';
 
 
 // Behandelaar invoerscherm voor Neuropsychologisch Dashboard
@@ -247,8 +246,7 @@ const BehandelaarInvoer = () => {
         <div className="border-2 border-orange-200 rounded-lg p-3 bg-orange-50">
           <h4 className="font-medium mb-2 text-orange-800">⚠️ Totaal IQ score verborgen</h4>
           <p className="text-sm text-orange-700">
-            Deze totaal IQ score wordt <strong>niet getoond</strong> in de visuele weergave omdat het profiel als disharmonisch is beoordeeld.
-            Alleen de individuele subtestscores worden weergegeven.
+            Deze score wordt niet getoond vanwege te grote verschillen tussen subtests
           </p>
         </div>
       )}

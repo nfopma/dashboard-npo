@@ -1,6 +1,6 @@
 import React from 'react';
-import { HelpCircle, Plus, Trash2 } from 'lucide-react';
-import emojiOptions from '../config/emojiOptions'; // Importeer emoji opties
+import { HelpCircle } from 'lucide-react';
+import DynamicList from './DynamicList'; // Importeer DynamicList
 
 const VoorinformatieForm = ({ formData, updateFormData, addKlacht, removeKlacht, updateKlacht }) => {
   // Opleidingsniveau opties
@@ -70,58 +70,18 @@ const VoorinformatieForm = ({ formData, updateFormData, addKlacht, removeKlacht,
         </div>
       </div>
 
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-2">
-          <h3 className="font-bold">⚠️ Klachten</h3>
-          <button
-            className="text-blue-600 flex items-center text-sm"
-            onClick={addKlacht}
-          >
-            <Plus size={16} className="mr-1" />
-            Klacht toevoegen
-          </button>
-        </div>
-
-        {formData.klachten.map((klacht, index) => (
-          <div key={index} className="flex items-start space-x-2 mb-2 p-2 border rounded bg-gray-50">
-            <div className="flex-grow-0">
-              <select
-                className="p-2 border rounded-md"
-                value={klacht.emoji}
-                onChange={(e) => updateKlacht(index, 'emoji', e.target.value)}
-              >
-                {emojiOptions.klachten.map(option => (
-                  <option key={option.emoji} value={option.emoji}>
-                    {option.emoji} {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <input
-              type="text"
-              className="flex-grow p-2 border rounded-md"
-              placeholder="Beschrijf de klacht"
-              value={klacht.tekst}
-              onChange={(e) => updateKlacht(index, 'tekst', e.target.value)}
-            />
-
-            <button
-              className="p-2 text-red-500"
-              onClick={() => removeKlacht(index)}
-            >
-              <Trash2 size={18} />
-            </button>
-          </div>
-        ))}
-
-        <div className="bg-blue-50 p-3 rounded-md mt-2 flex items-start">
-          <HelpCircle className="text-blue-500 mr-2 flex-shrink-0 mt-1" size={18} />
-          <p className="text-sm text-blue-700">
-            Kies een passende emoji en beschrijf de klacht beknopt. Gebruik concrete, eenvoudige taal die begrijpelijk is voor de patiënt.
-          </p>
-        </div>
-      </div>
+      {/* Klachten sectie met DynamicList */}
+      <DynamicList
+        items={formData.klachten}
+        sectionKey="klachten"
+        addHandler={addKlacht}
+        removeHandler={removeKlacht}
+        updateHandler={updateKlacht}
+        placeholder="Beschrijf de klacht"
+        helpText="Kies een passende emoji en beschrijf de klacht beknopt. Gebruik concrete, eenvoudige taal die begrijpelijk is voor de patiënt."
+        title="Klachten"
+        titleEmoji="⚠️"
+      />
     </div>
   );
 };
