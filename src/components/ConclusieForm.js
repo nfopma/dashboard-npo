@@ -43,7 +43,7 @@ const ConclusieForm = ({ formData, updateFormData, addBevinding, removeBevinding
           <p className="text-sm text-blue-700">
             Specificeer de DSM-5-TR classificatie op basis van de neuropsychologische bevindingen. Vermeld zowel de diagnostische code als de volledige beschrijving.
           </p>
-        </p>
+        </div> {/* Verwijderde de extra </p> tag hier */}
       </div>
     </div>
   );
