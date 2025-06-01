@@ -1,7 +1,8 @@
 import React from 'react';
 import { HelpCircle, Plus, Trash2 } from 'lucide-react';
+import emojiOptions from '../config/emojiOptions'; // Importeer emoji opties
 
-const VoorinformatieForm = ({ formData, updateFormData, addKlacht, removeKlacht, updateKlacht, emojiOptions }) => {
+const VoorinformatieForm = ({ formData, updateFormData, addKlacht, removeKlacht, updateKlacht }) => {
   // Opleidingsniveau opties
   const opleidingsniveauOpties = [
     'Basisonderwijs',

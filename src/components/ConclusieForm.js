@@ -1,7 +1,8 @@
 import React from 'react';
 import { HelpCircle, Plus, Trash2 } from 'lucide-react';
+import emojiOptions from '../config/emojiOptions'; // Importeer emoji opties
 
-const ConclusieForm = ({ formData, updateFormData, addBevinding, removeBevinding, updateBevinding, emojiOptions }) => {
+const ConclusieForm = ({ formData, updateFormData, addBevinding, removeBevinding, updateBevinding }) => {
   return (
     <div>
       <div className="flex justify-between items-center mb-4">

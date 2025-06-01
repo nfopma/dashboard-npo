@@ -10,8 +10,8 @@ const DashboardHeader = ({ previewMode, setPreviewMode, emojiSize, setEmojiSize 
         <div className="flex space-x-4 items-center">
           {/* Emoji grootte instelling */}
           <EmojiSizeControl emojiSize={emojiSize} setEmojiSize={setEmojiSize} />
-          
-          <button 
+
+          <button
             className={`px-4 py-2 rounded-md flex items-center ${previewMode ? 'bg-blue-600' : 'bg-green-600'}`}
             onClick={() => setPreviewMode(!previewMode)}
           >

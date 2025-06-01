@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Save, Eye, Edit, HelpCircle, Plus, Trash2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Save, Eye, Edit, HelpCircle } from 'lucide-react'; // Verwijder ongebruikte imports
 import EmojiSizeControl from './components/EmojiSizeControl';
 import SectionNavigation from './components/SectionNavigation';
 import DashboardHeader from './components/DashboardHeader';
 import BasicInfoForm from './components/BasicInfoForm';
 import VoorinformatieForm from './components/VoorinformatieForm';
-import BeinvloedendeFactorenForm from './components/BeinvloedendeFactorenForm'; // Importeer het nieuwe component
-import ConclusieForm from './components/ConclusieForm'; // Importeer het nieuwe component
-import BehandelingForm from './components/BehandelingForm'; // Importeer het nieuwe component
+import BeinvloedendeFactorenForm from './components/BeinvloedendeFactorenForm';
+import ConclusieForm from './components/ConclusieForm';
+import BehandelingForm from './components/BehandelingForm';
+import { getIQNiveau, getIQKleur, getIQPositie } from './utils/iqCalculations'; // Importeer IQ functies
+import { getEmojiSizeClass } from './utils/emojiUtils'; // Importeer emoji grootte functie
+import emojiOptions from './config/emojiOptions'; // Importeer emoji opties
+import beschrijvingOpties from './config/beschrijvingOpties'; // Importeer beschrijving opties
 
 
 // Behandelaar invoerscherm voor Neuropsychologisch Dashboard
@@ -81,24 +85,32 @@ const BehandelaarInvoer = () => {
         beschrijving: 'Je totale IQ score',
         disharmonisch: 'Ja'
       }
-    },
-    behandeling: {
-      praktischeAdviezen: [
-        { tekst: 'Gebruik externe geheugensteun zoals agenda\'s en notities voor dagelijkse taken', emoji: '📝' },
-        { tekst: 'Verminder alcohol consumptie tot maximaal 1-2 glazen per week', emoji: '🍺' },
-        { tekst: 'Structureer complexe taken in kleinere, overzichtelijke stappen', emoji: '🔄' }
-      ]
-    },
-    klachten: [
-      { tekst: 'Woordvindproblemen', emoji: '🔤' },
-      { tekst: 'Geheugenproblemen', emoji: '🧠' },
-      { tekst: 'Verhoogd alcoholgebruik', emoji: '🍺' },
-      { tekst: 'Agressie', emoji: '😠' },
-      { tekst: 'Problemen met Politie & Justitie', emoji: '👮' }
-    ]
+    }
   });
 
-  // Handler voor formulier updates
+  // State voor dynamische lijsten (klachten, bevindingen, adviezen)
+  const [klachten, setKlachten] = useState([
+    { tekst: 'Woordvindproblemen', emoji: '🔤' },
+    { tekst: 'Geheugenproblemen', emoji: '🧠' },
+    { tekst: 'Verhoogd alcoholgebruik', emoji: '🍺' },
+    { tekst: 'Agressie', emoji: '😠' },
+    { tekst: 'Problemen met Politie & Justitie', emoji: '👮' }
+  ]);
+
+  const [belangrijksteBevindingen, setBelangrijksteBevindingen] = useState([
+    { tekst: 'Verminderde werkgeheugencapaciteit beïnvloedt dagelijks functioneren', emoji: '🧩' },
+    { tekst: 'Goede verbale vaardigheden kunnen compenseren voor andere tekorten', emoji: '💬' },
+    { tekst: 'Middelengebruik heeft waarschijnlijk negatieve impact op cognitieve functies', emoji: '🍺' }
+  ]);
+
+  const [praktischeAdviezen, setPraktischeAdviezen] = useState([
+    { tekst: 'Gebruik externe geheugensteun zoals agenda\'s en notities voor dagelijkse taken', emoji: '📝' },
+    { tekst: 'Verminder alcohol consumptie tot maximaal 1-2 glazen per week', emoji: '🍺' },
+    { tekst: 'Structureer complexe taken in kleinere, overzichtelijke stappen', emoji: '🔄' }
+  ]);
+
+
+  // Handler voor formulier updates (voor vaste velden)
   const updateFormData = (section, field, value) => {
     setFormData(prev => ({
       ...prev,
@@ -109,7 +121,7 @@ const BehandelaarInvoer = () => {
     }));
   };
 
-  // Handler voor score updates
+  // Handler voor score updates (Intelligentie sectie)
   const updateScore = (category, field, value) => {
     setFormData(prev => ({
       ...prev,
@@ -123,174 +135,51 @@ const BehandelaarInvoer = () => {
     }));
   };
 
-  // Handler voor praktische adviezen toevoegen/verwijderen
-  const addAdvies = () => {
-    setFormData(prev => ({
-      ...prev,
-      behandeling: {
-        ...prev.behandeling,
-        praktischeAdviezen: [...prev.behandeling.praktischeAdviezen, { tekst: '', emoji: '💡' }]
-      }
-    }));
-  };
-
-  const removeAdvies = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      behandeling: {
-        ...prev.behandeling,
-        praktischeAdviezen: prev.behandeling.praktischeAdviezen.filter((_, i) => i !== index)
-      }
-    }));
-  };
-
-  const updateAdvies = (index, field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      behandeling: {
-        ...prev.behandeling,
-        praktischeAdviezen: prev.behandeling.praktischeAdviezen.map((advies, i) =>
-          i === index ? { ...advies, [field]: value } : advies
-        )
-      }
-    }));
-  };
-
-  // Handler voor belangrijkste bevindingen toevoegen/verwijderen
-  const addBevinding = () => {
-    setFormData(prev => ({
-      ...prev,
-      conclusie: {
-        ...prev.conclusie,
-        belangrijksteBevindingen: [...prev.conclusie.belangrijksteBevindingen, { tekst: '', emoji: '🔍' }]
-      }
-    }));
-  };
-
-  const removeBevinding = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      conclusie: {
-        ...prev.conclusie,
-        belangrijksteBevindingen: prev.conclusie.belangrijksteBevindingen.filter((_, i) => i !== index)
-      }
-    }));
-  };
-
-  const updateBevinding = (index, field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      conclusie: {
-        ...prev.conclusie,
-        belangrijksteBevindingen: prev.conclusie.belangrijksteBevindingen.map((bevinding, i) =>
-          i === index ? { ...bevinding, [field]: value } : bevinding
-        )
-      }
-    }));
-  };
-
-  // Handler voor klachten toevoegen/verwijderen
+  // Handlers voor Klachten lijst
   const addKlacht = () => {
-    setFormData(prev => ({
-      ...prev,
-      klachten: [...prev.klachten, { tekst: '', emoji: '⚠️' }]
-    }));
+    setKlachten(prev => [...prev, { tekst: '', emoji: '⚠️' }]);
   };
 
   const removeKlacht = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      klachten: prev.klachten.filter((_, i) => i !== index)
-    }));
+    setKlachten(prev => prev.filter((_, i) => i !== index));
   };
 
   const updateKlacht = (index, field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      klachten: prev.klachten.map((klacht, i) =>
-        i === index ? { ...klacht, [field]: value } : klacht
-      )
-    }));
+    setKlachten(prev => prev.map((klacht, i) =>
+      i === index ? { ...klacht, [field]: value } : klacht
+    ));
   };
 
-  // Voorgedefinieerde emoji opties voor verschillende categorieën
-  const emojiOptions = {
-    klachten: [
-      { emoji: '🔤', label: 'Taal/spraak' },
-      { emoji: '🧠', label: 'Geheugen' },
-      { emoji: '🍺', label: 'Middelen' },
-      { emoji: '😠', label: 'Emoties/agressie' },
-      { emoji: '👮', label: 'Juridisch' },
-      { emoji: '😴', label: 'Slaap' },
-      { emoji: '🏃', label: 'Motoriek' },
-      { emoji: '🤔', label: 'Concentratie' },
-      { emoji: '⚠️', label: 'Algemeen' }
-    ],
-    bevindingen: [
-      { emoji: '🧩', label: 'Werkgeheugen' },
-      { emoji: '💬', label: 'Verbale vaardigheden' },
-      { emoji: '👁️', label: 'Visueel-ruimtelijk' },
-      { emoji: '⚡', label: 'Verwerkingssnelheid' },
-      { emoji: '🎯', label: 'Aandacht/concentratie' },
-      { emoji: '⚙️', label: 'Executief functioneren' },
-      { emoji: '🍺', label: 'Middelengebruik' },
-      { emoji: '💊', label: 'Medicatie-effecten' },
-      { emoji: '🔍', label: 'Algemene bevinding' },
-      { emoji: '📈', label: 'Sterke punt' },
-      { emoji: '📉', label: 'Zwak punt' }
-    ],
-    adviezen: [
-      { emoji: '📝', label: 'Geheugensteun' },
-      { emoji: '🔄', label: 'Structuur/organisatie' },
-      { emoji: '🧠', label: 'Cognitieve training' },
-      { emoji: '💊', label: 'Medicatie aanpassing' },
-      { emoji: '🍺', label: 'Middelengebruik' },
-      { emoji: '😴', label: 'Slaaphygiëne' },
-      { emoji: '🏃', label: 'Lichaamsbeweging' },
-      { emoji: '🧘', label: 'Ontspanning/mindfulness' },
-      { emoji: '👥', label: 'Sociale ondersteuning' },
-      { emoji: '🏥', label: 'Medische follow-up' },
-      { emoji: '🎯', label: 'Doelgerichte interventie' },
-      { emoji: '💡', label: 'Algemeen advies' }
-    ],
-    intelligentie: [
-      { emoji: '💬', label: 'Verbaal' },
-      { emoji: '👁️', label: 'Visueel' },
-      { emoji: '🧩', label: 'Werkgeheugen' },
-      { emoji: '⚡', label: 'Snelheid' },
-      { emoji: '🧠', label: 'Totaal IQ' },
-      { emoji: '🧮', label: 'Rekenen' }
-    ]
+  // Handlers voor Belangrijkste Bevindingen lijst
+  const addBevinding = () => {
+    setBelangrijksteBevindingen(prev => [...prev, { tekst: '', emoji: '🔍' }]);
   };
 
-  // Voorgeselecteerde beschrijvingen voor intelligentie subtests
-  const beschrijvingOpties = {
-    verbaalBegrip: [
-      "Talige kennis, redeneervermogen, woordenschat, jezelf uitdrukken",
-      "Vermogen om taal te begrijpen en je in woorden uit te drukken",
-      "Kennis van woorden en talige redeneervaardigheden"
-    ],
-    perceptueelRedeneren: [
-      "Visueel-analytisch oplossingsvermogen, planning, overzicht",
-      "Vermogen om visuele patronen te herkennen en problemen op te lossen",
-      "Ruimtelijk inzicht en niet-talig redeneren"
-    ],
-    werkgeheugen: [
-      "Informatie tijdelijk vasthouden, 'iets' doen en tot een resultaat komen",
-      "Vermogen om informatie in je hoofd te houden en ermee te werken",
-      "Concentratie en het onthouden van informatie tijdens taken"
-    ],
-    verwerkingssnelheid: [
-      "Snel en correct eenvoudige visuele informatie scannen, onderscheiden",
-      "Hoe snel je simpele taken kunt uitvoeren",
-      "Snelheid van denken en reageren op eenvoudige opdrachten"
-    ],
-    totaalIQ: [
-      "Je totale IQ score",
-      "Overall maat voor je cognitieve vaardigheden",
-      "Combinatie van alle intelligentie-onderdelen"
-    ]
+  const removeBevinding = (index) => {
+    setBelangrijksteBevindingen(prev => prev.filter((_, i) => i !== index));
   };
+
+  const updateBevinding = (index, field, value) => {
+    setBelangrijksteBevindingen(prev => prev.map((bevinding, i) =>
+      i === index ? { ...bevinding, [field]: value } : bevinding
+    ));
+  };
+
+  // Handlers voor Praktische Adviezen lijst
+  const addAdvies = () => {
+    setPraktischeAdviezen(prev => [...prev, { tekst: '', emoji: '💡' }]);
+  };
+
+  const removeAdvies = (index) => {
+    setPraktischeAdviezen(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const updateAdvies = (index, field, value) => {
+    setPraktischeAdviezen(prev => prev.map((advies, i) =>
+      i === index ? { ...advies, [field]: value } : advies
+    ));
+  };
+
 
   // Intelligentie categorieën voor formulier rendering
   const intelligentieCategorieen = [
@@ -325,57 +214,6 @@ const BehandelaarInvoer = () => {
       beschrijvingDefault: 'Je totale IQ score'
     }
   ];
-
-  // Functie om IQ niveau te bepalen
-  const getIQNiveau = (iqScore) => {
-    if (iqScore >= 136) return 'Zeer hoog';
-    if (iqScore >= 121) return 'Hoog';
-    if (iqScore >= 106) return 'Boven gemiddeld';
-    if (iqScore >= 95) return 'Gemiddeld';
-    if (iqScore >= 80) return 'Beneden gemiddeld';
-    if (iqScore >= 65) return 'Laag';
-    return 'Zeer laag';
-  };
-
-  // Functie om IQ kleur te bepalen
-  const getIQKleur = (iqScore) => {
-    if (iqScore >= 136) return 'bg-green-600';
-    if (iqScore >= 121) return 'bg-green-500';
-    if (iqScore >= 106) return 'bg-green-300';
-    if (iqScore >= 95) return 'bg-yellow-400';
-    if (iqScore >= 80) return 'bg-orange-400';
-    if (iqScore >= 65) return 'bg-red-400';
-    return 'bg-red-500';
-  };
-
-  // Functie om emoji grootte klasse te bepalen
-  const getEmojiSizeClass = (type = 'normal') => {
-    const sizes = {
-      1: { normal: 'text-sm', header: 'text-lg', subheader: 'text-base' },
-      2: { normal: 'text-xl', header: 'text-2xl', subheader: 'text-xl' },
-      3: { normal: 'text-2xl', header: 'text-3xl', subheader: 'text-2xl' },
-      4: { normal: 'text-3xl', header: 'text-4xl', subheader: 'text-3xl' },
-      5: { normal: 'text-4xl', header: 'text-5xl', subheader: 'text-4xl' }
-    };
-    return sizes[emojiSize][type] || sizes[2][type];
-  };
-
-  // Functie om IQ score te converteren naar percentiel positie (voor visualisatie)
-  const getIQPositie = (iqScore) => {
-    // IQ schaal: 50-150 verdeeld over 7 gelijke segmenten
-    // Elk segment = (150-50)/7 = ~14.3 punten = 14.29% van de schaal
-    const segmentBreedte = 100 / 7; // 14.29%
-
-    if (iqScore <= 50) return 0;
-    if (iqScore <= 64) return ((iqScore - 50) / 14) * segmentBreedte;
-    if (iqScore <= 79) return segmentBreedte + ((iqScore - 65) / 14) * segmentBreedte;
-    if (iqScore <= 94) return 2 * segmentBreedte + ((iqScore - 80) / 14) * segmentBreedte;
-    if (iqScore <= 105) return 3 * segmentBreedte + ((iqScore - 95) / 10) * segmentBreedte;
-    if (iqScore <= 120) return 4 * segmentBreedte + ((iqScore - 106) / 14) * segmentBreedte;
-    if (iqScore <= 135) return 5 * segmentBreedte + ((iqScore - 121) / 14) * segmentBreedte;
-    if (iqScore <= 150) return 6 * segmentBreedte + ((iqScore - 136) / 14) * segmentBreedte;
-    return 100;
-  };
 
   // Component voor individuele intelligentie subtest invoer
   const IntelligentieSubtest = ({ categorie, data }) => (
@@ -625,23 +463,23 @@ const BehandelaarInvoer = () => {
 
                 <div className="mt-4 p-4 bg-green-50 rounded-lg">
                   <h3 className="font-bold mb-3 flex items-center">
-                    <span className={`mr-2 ${getEmojiSizeClass('header')}`}>📋</span>Voorinformatie
+                    <span className={`mr-2 ${getEmojiSizeClass(emojiSize, 'header')}`}>📋</span>Voorinformatie
                   </h3>
                   <div className="space-y-2 text-sm">
-                    <p><span className={`font-semibold ${getEmojiSizeClass('subheader')} mr-2`}>🎓</span><span className="font-semibold">Opleidingsniveau:</span> {formData.voorinformatie.opleidingsniveau || 'Niet ingevuld'}</p>
-                    <p><span className={`font-semibold ${getEmojiSizeClass('subheader')} mr-2`}>🤕</span><span className="font-semibold">Letsel:</span> {formData.voorinformatie.letsel || 'Niet ingevuld'}</p>
-                    <p><span className={`font-semibold ${getEmojiSizeClass('subheader')} mr-2`}>🍺</span><span className="font-semibold">Middelengebruik:</span> {formData.voorinformatie.middelengebruik || 'Niet ingevuld'}</p>
+                    <p><span className={`font-semibold ${getEmojiSizeClass(emojiSize, 'subheader')} mr-2`}>🎓</span><span className="font-semibold">Opleidingsniveau:</span> {formData.voorinformatie.opleidingsniveau || 'Niet ingevuld'}</p>
+                    <p><span className={`font-semibold ${getEmojiSizeClass(emojiSize, 'subheader')} mr-2`}>🤕</span><span className="font-semibold">Letsel:</span> {formData.voorinformatie.letsel || 'Niet ingevuld'}</p>
+                    <p><span className={`font-semibold ${getEmojiSizeClass(emojiSize, 'subheader')} mr-2`}>🍺</span><span className="font-semibold">Middelengebruik:</span> {formData.voorinformatie.middelengebruik || 'Niet ingevuld'}</p>
                   </div>
                 </div>
 
                 <div className="mt-4 bg-gray-50 p-4 rounded-lg">
                   <h3 className="font-bold mb-2 flex items-center">
-                    <span className={`mr-2 ${getEmojiSizeClass('header')}`}>⚠️</span>Klachten
+                    <span className={`mr-2 ${getEmojiSizeClass(emojiSize, 'header')}`}>⚠️</span>Klachten
                   </h3>
                   <ul className="list-disc pl-5 space-y-1">
-                    {formData.klachten.map((klacht, index) => (
+                    {klachten.map((klacht, index) => (
                       <li key={index} className="flex items-center">
-                        <span className={`mr-3 ${getEmojiSizeClass('normal')}`}>{klacht.emoji}</span>
+                        <span className={`mr-3 ${getEmojiSizeClass(emojiSize, 'normal')}`}>{klacht.emoji}</span>
                         {klacht.tekst}
                       </li>
                     ))}
@@ -653,9 +491,9 @@ const BehandelaarInvoer = () => {
                     <span className={`mr-2 ${getEmojiSizeClass('header')}`}>⚖️</span>Beïnvloedende factoren
                   </h3>
                   <div className="space-y-2 text-sm">
-                    <p><span className={`font-semibold ${getEmojiSizeClass('subheader')} mr-2`}>💊</span><span className="font-semibold">Medicatie:</span> {formData.beinvloedendeFactoren.medicatie || 'Niet ingevuld'}</p>
-                    <p><span className={`font-semibold ${getEmojiSizeClass('subheader')} mr-2`}>📊</span><span className="font-semibold">SCL uitkomsten:</span> {formData.beinvloedendeFactoren.sclUitkomsten || 'Niet ingevuld'}</p>
-                    <p><span className={`font-semibold ${getEmojiSizeClass('subheader')} mr-2`}>✋</span><span className="font-semibold">Motorische snelheid:</span> {formData.beinvloedendeFactoren.motorischeSnelheid || 'Niet ingevuld'}</p>
+                    <p><span className={`font-semibold ${getEmojiSizeClass(emojiSize, 'subheader')} mr-2`}>💊</span><span className="font-semibold">Medicatie:</span> {formData.beinvloedendeFactoren.medicatie || 'Niet ingevuld'}</p>
+                    <p><span className={`font-semibold ${getEmojiSizeClass(emojiSize, 'subheader')} mr-2`}>📊</span><span className="font-semibold">SCL uitkomsten:</span> {formData.beinvloedendeFactoren.sclUitkomsten || 'Niet ingevuld'}</p>
+                    <p><span className={`font-semibold ${getEmojiSizeClass(emojiSize, 'subheader')} mr-2`}>✋</span><span className="font-semibold">Motorische snelheid:</span> {formData.beinvloedendeFactoren.motorischeSnelheid || 'Niet ingevuld'}</p>
                   </div>
                 </div>
 
@@ -676,7 +514,7 @@ const BehandelaarInvoer = () => {
                       <div key={categorie.key} className="mb-4 p-3 bg-white rounded-lg">
                         <div className="flex justify-between mb-2">
                           <span className="font-medium flex items-center">
-                            <span className={`${getEmojiSizeClass('header')} mr-3`}>{categorie.emoji}</span>
+                            <span className={`${getEmojiSizeClass(emojiSize, 'header')} mr-3`}>{categorie.emoji}</span>
                             {categorie.label}
                           </span>
                           <span className="text-sm">
@@ -726,17 +564,17 @@ const BehandelaarInvoer = () => {
 
                 <div className="mt-4 p-4 bg-yellow-50 rounded-lg">
                   <h3 className="font-bold mb-3 flex items-center">
-                    <span className={`mr-2 ${getEmojiSizeClass('header')}`}>🎯</span>Conclusie
+                    <span className={`mr-2 ${getEmojiSizeClass(emojiSize, 'header')}`}>🎯</span>Conclusie
                   </h3>
                   <div className="space-y-3">
                     <div>
                       <h4 className="font-semibold mb-2 flex items-center">
-                        <span className={`mr-2 ${getEmojiSizeClass('subheader')}`}>🔍</span>Belangrijkste bevindingen:
+                        <span className={`mr-2 ${getEmojiSizeClass(emojiSize, 'subheader')}`}>🔍</span>Belangrijkste bevindingen:
                       </h4>
                       <ul className="list-disc pl-5 space-y-1">
-                        {formData.conclusie.belangrijksteBevindingen.map((bevinding, index) => (
+                        {belangrijksteBevindingen.map((bevinding, index) => (
                           <li key={index} className="text-sm flex items-center">
-                            <span className={`mr-3 ${getEmojiSizeClass('normal')}`}>{bevinding.emoji}</span>
+                            <span className={`mr-3 ${getEmojiSizeClass(emojiSize, 'normal')}`}>{bevinding.emoji}</span>
                             {bevinding.tekst}
                           </li>
                         ))}
@@ -745,7 +583,7 @@ const BehandelaarInvoer = () => {
 
                     <div>
                       <h4 className="font-semibold mb-1 flex items-center">
-                        <span className={`mr-2 ${getEmojiSizeClass('subheader')}`}>📋</span>DSM Classificatie:
+                        <span className={`mr-2 ${getEmojiSizeClass(emojiSize, 'subheader')}`}>📋</span>DSM Classificatie:
                       </h4>
                       <p className="text-sm bg-white p-2 rounded border">
                         {formData.conclusie.dsmClassificatie || 'Niet ingevuld'}
@@ -756,16 +594,16 @@ const BehandelaarInvoer = () => {
 
                 <div className="mt-4 p-4 bg-teal-50 rounded-lg">
                   <h3 className="font-bold mb-3 flex items-center">
-                    <span className={`mr-2 ${getEmojiSizeClass('header')}`}>🤝</span>Behandeling
+                    <span className={`mr-2 ${getEmojiSizeClass(emojiSize, 'header')}`}>🤝</span>Behandeling
                   </h3>
                   <div>
                     <h4 className="font-semibold mb-2 flex items-center">
-                      <span className={`mr-2 ${getEmojiSizeClass('subheader')}`}>💡</span>Praktische adviezen:
+                      <span className={`mr-2 ${getEmojiSizeClass(emojiSize, 'subheader')}`}>💡</span>Praktische adviezen:
                     </h4>
                     <ul className="list-disc pl-5 space-y-1">
-                      {formData.behandeling.praktischeAdviezen.map((advies, index) => (
+                      {praktischeAdviezen.map((advies, index) => (
                         <li key={index} className="text-sm flex items-center">
-                          <span className={`mr-3 ${getEmojiSizeClass('normal')}`}>{advies.emoji}</span>
+                          <span className={`mr-3 ${getEmojiSizeClass(emojiSize, 'normal')}`}>{advies.emoji}</span>
                           {advies.tekst}
                         </li>
                       ))}
@@ -786,7 +624,7 @@ const BehandelaarInvoer = () => {
 
               {activeSection === 'voorinformatie' && (
                 <VoorinformatieForm
-                  formData={{ ...formData.voorinformatie, klachten: formData.klachten }}
+                  formData={{ ...formData.voorinformatie, klachten: klachten }}
                   updateFormData={updateFormData}
                   addKlacht={addKlacht}
                   removeKlacht={removeKlacht}
@@ -918,7 +756,7 @@ const BehandelaarInvoer = () => {
 
               {activeSection === 'conclusie' && (
                 <ConclusieForm
-                  formData={formData.conclusie}
+                  formData={{ ...formData.conclusie, belangrijksteBevindingen: belangrijksteBevindingen }}
                   updateFormData={updateFormData}
                   addBevinding={addBevinding}
                   removeBevinding={removeBevinding}
@@ -929,7 +767,7 @@ const BehandelaarInvoer = () => {
 
               {activeSection === 'behandeling' && (
                 <BehandelingForm
-                  formData={formData.behandeling}
+                  formData={{ ...formData.behandeling, praktischeAdviezen: praktischeAdviezen }}
                   updateFormData={updateFormData}
                   addAdvies={addAdvies}
                   removeAdvies={removeAdvies}
