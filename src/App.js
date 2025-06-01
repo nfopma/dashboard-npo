@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Save, Eye, Edit, HelpCircle, Plus, Trash2 } from 'lucide-react';
+import EmojiSizeControl from './components/EmojiSizeControl';
 
 // Behandelaar invoerscherm voor Neuropsychologisch Dashboard
 const BehandelaarInvoer = () => {
@@ -590,20 +591,7 @@ const BehandelaarInvoer = () => {
           <h1 className="text-2xl font-bold">Neuropsychologisch Dashboard - Invoerscherm</h1>
           <div className="flex space-x-4 items-center">
             {/* Emoji grootte instelling */}
-            <div className="flex items-center space-x-2 bg-blue-600 px-3 py-2 rounded-md">
-              <span className="text-sm">📏 Emoji grootte:</span>
-              <input
-                type="range"
-                min="1"
-                max="5"
-                value={emojiSize}
-                onChange={(e) => setEmojiSize(parseInt(e.target.value))}
-                className="w-20 h-2 bg-blue-500 rounded-lg appearance-none cursor-pointer"
-              />
-              <span className="text-xs bg-blue-800 px-2 py-1 rounded">
-                {['XS', 'S', 'M', 'L', 'XL'][emojiSize - 1]}
-              </span>
-            </div>
+            <EmojiSizeControl emojiSize={emojiSize} setEmojiSize={setEmojiSize} />
             
             <button 
               className={`px-4 py-2 rounded-md flex items-center ${previewMode ? 'bg-blue-600' : 'bg-green-600'}`}
