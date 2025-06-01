@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Save, Eye, Edit, HelpCircle, Plus, Trash2 } from 'lucide-react';
 import EmojiSizeControl from './components/EmojiSizeControl';
 import SectionNavigation from './components/SectionNavigation';
+import DashboardHeader from './components/DashboardHeader'; // Importeer het nieuwe component
 
 // Behandelaar invoerscherm voor Neuropsychologisch Dashboard
 const BehandelaarInvoer = () => {
@@ -587,36 +588,12 @@ const BehandelaarInvoer = () => {
   return (
     <div className="bg-gray-100 min-h-screen">
       {/* Header met titel en knoppen */}
-      <header className="bg-blue-700 text-white p-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Neuropsychologisch Dashboard - Invoerscherm</h1>
-          <div className="flex space-x-4 items-center">
-            {/* Emoji grootte instelling */}
-            <EmojiSizeControl emojiSize={emojiSize} setEmojiSize={setEmojiSize} />
-            
-            <button 
-              className={`px-4 py-2 rounded-md flex items-center ${previewMode ? 'bg-blue-600' : 'bg-green-600'}`}
-              onClick={() => setPreviewMode(!previewMode)}
-            >
-              {previewMode ? (
-                <>
-                  <Edit className="mr-2" size={18} />
-                  Bewerken
-                </>
-              ) : (
-                <>
-                  <Eye className="mr-2" size={18} />
-                  Preview
-                </>
-              )}
-            </button>
-            <button className="px-4 py-2 bg-blue-600 rounded-md flex items-center">
-              <Save className="mr-2" size={18} />
-              Opslaan
-            </button>
-          </div>
-        </div>
-      </header>
+      <DashboardHeader 
+        previewMode={previewMode}
+        setPreviewMode={setPreviewMode}
+        emojiSize={emojiSize}
+        setEmojiSize={setEmojiSize}
+      />
 
       <div className="container mx-auto p-4">
         {/* Navigatie tussen secties */}
