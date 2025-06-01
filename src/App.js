@@ -2,9 +2,13 @@ import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Save, Eye, Edit, HelpCircle, Plus, Trash2 } from 'lucide-react';
 import EmojiSizeControl from './components/EmojiSizeControl';
 import SectionNavigation from './components/SectionNavigation';
-import DashboardHeader from './components/DashboardHeader'; // Importeer het nieuwe component
-import BasicInfoForm from './components/BasicInfoForm'; // Importeer het nieuwe component
-import VoorinformatieForm from './components/VoorinformatieForm'; // Importeer het nieuwe component
+import DashboardHeader from './components/DashboardHeader';
+import BasicInfoForm from './components/BasicInfoForm';
+import VoorinformatieForm from './components/VoorinformatieForm';
+import BeinvloedendeFactorenForm from './components/BeinvloedendeFactorenForm'; // Importeer het nieuwe component
+import ConclusieForm from './components/ConclusieForm'; // Importeer het nieuwe component
+import BehandelingForm from './components/BehandelingForm'; // Importeer het nieuwe component
+
 
 // Behandelaar invoerscherm voor Neuropsychologisch Dashboard
 const BehandelaarInvoer = () => {
@@ -792,63 +796,10 @@ const BehandelaarInvoer = () => {
               )}
 
               {activeSection === 'beinvloedendeFactoren' && (
-                <div>
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold flex items-center">
-                      <span className="text-3xl mr-3">⚖️</span>
-                      Beïnvloedende factoren
-                    </h2>
-                    <div className="text-sm text-gray-500">Stap 3 van 7</div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        💊 Medicatie
-                      </label>
-                      <textarea
-                        className="w-full p-2 border rounded-md"
-                        rows="3"
-                        placeholder="Beschrijf huidige medicatie die mogelijk de testresultaten kan beïnvloeden"
-                        value={formData.beinvloedendeFactoren.medicatie}
-                        onChange={(e) => updateFormData('beinvloedendeFactoren', 'medicatie', e.target.value)}
-                      ></textarea>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        📊 SCL uitkomsten
-                      </label>
-                      <textarea
-                        className="w-full p-2 border rounded-md"
-                        rows="3"
-                        placeholder="Relevante uitkomsten van de SCL-90 of andere symptoom checklists"
-                        value={formData.beinvloedendeFactoren.sclUitkomsten}
-                        onChange={(e) => updateFormData('beinvloedendeFactoren', 'sclUitkomsten', e.target.value)}
-                      ></textarea>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        ✋ Motorische snelheid
-                      </label>
-                      <textarea
-                        className="w-full p-2 border rounded-md"
-                        rows="3"
-                        placeholder="Observaties over motorische vaardigheden die de testprestaties kunnen beïnvloeden"
-                        value={formData.beinvloedendeFactoren.motorischeSnelheid}
-                        onChange={(e) => updateFormData('beinvloedendeFactoren', 'motorischeSnelheid', e.target.value)}
-                      ></textarea>
-                    </div>
-                  </div>
-
-                  <div className="bg-purple-50 p-3 rounded-md mt-4 flex items-start">
-                    <HelpCircle className="text-purple-500 mr-2 flex-shrink-0 mt-1" size={18} />
-                    <p className="text-sm text-purple-700">
-                      Deze factoren kunnen de interpretatie van testresultaten beïnvloeden. Vul in wat relevant is voor de testprestaties en interpretatie.
-                    </p>
-                  </div>
-                </div>
+                <BeinvloedendeFactorenForm
+                  formData={formData.beinvloedendeFactoren}
+                  updateFormData={updateFormData}
+                />
               )}
 
               {activeSection === 'intelligentie' && (
@@ -966,155 +917,25 @@ const BehandelaarInvoer = () => {
               )}
 
               {activeSection === 'conclusie' && (
-                <div>
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold flex items-center">
-                      <span className="text-3xl mr-3">🎯</span>
-                      Conclusie
-                    </h2>
-                    <div className="text-sm text-gray-500">Stap 6 van 7</div>
-                  </div>
-
-                  {/* Belangrijkste bevindingen sectie */}
-                  <div className="mb-6">
-                    <div className="flex justify-between items-center mb-2">
-                      <h3 className="font-bold">🔍 Belangrijkste bevindingen</h3>
-                      <button
-                        className="text-blue-600 flex items-center text-sm"
-                        onClick={addBevinding}
-                      >
-                        <Plus size={16} className="mr-1" />
-                        Bevinding toevoegen
-                      </button>
-                    </div>
-
-                    {formData.conclusie.belangrijksteBevindingen.map((bevinding, index) => (
-                      <div key={index} className="flex items-start space-x-2 mb-2 p-2 border rounded bg-gray-50">
-                        <div className="flex-grow-0">
-                          <select
-                            className="p-2 border rounded-md"
-                            value={bevinding.emoji}
-                            onChange={(e) => updateBevinding(index, 'emoji', e.target.value)}
-                          >
-                            {emojiOptions.bevindingen.map(option => (
-                              <option key={option.emoji} value={option.emoji}>
-                                {option.emoji} {option.label}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <input
-                          type="text"
-                          className="flex-grow p-2 border rounded-md"
-                          placeholder="Beschrijf de belangrijkste bevinding"
-                          value={bevinding.tekst}
-                          onChange={(e) => updateBevinding(index, 'tekst', e.target.value)}
-                        ></input>
-
-                        <button
-                          className="p-2 text-red-500"
-                          onClick={() => removeBevinding(index)}
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    ))}
-
-                    <div className="bg-green-50 p-3 rounded-md mt-2 flex items-start">
-                      <HelpCircle className="text-green-500 mr-2 flex-shrink-0 mt-1" size={18} />
-                      <p className="text-sm text-green-700">
-                        Formuleer de belangrijkste conclusies uit het neuropsychologisch onderzoek. Focus op klinisch relevante bevindingen die van belang zijn voor behandeling en begeleiding.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* DSM Classificatie sectie */}
-                  <div className="mb-6">
-                    <h3 className="font-bold mb-2">📋 DSM Classificatie</h3>
-                    <textarea
-                      className="w-full p-3 border rounded-md"
-                      rows="4"
-                      placeholder="Voer de DSM-5-TR classificatie in, inclusief code en beschrijving (bijv. F06.7 Lichte neurocognitieve stoornis)"
-                      value={formData.conclusie.dsmClassificatie}
-                      onChange={(e) => updateFormData('conclusie', 'dsmClassificatie', e.target.value)}
-                    ></textarea>
-
-                    <div className="bg-blue-50 p-3 rounded-md mt-2 flex items-start">
-                      <HelpCircle className="text-blue-500 mr-2 flex-shrink-0 mt-1" size={18} />
-                      <p className="text-sm text-blue-700">
-                        Specificeer de DSM-5-TR classificatie op basis van de neuropsychologische bevindingen. Vermeld zowel de diagnostische code als de volledige beschrijving.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                <ConclusieForm
+                  formData={formData.conclusie}
+                  updateFormData={updateFormData}
+                  addBevinding={addBevinding}
+                  removeBevinding={removeBevinding}
+                  updateBevinding={updateBevinding}
+                  emojiOptions={emojiOptions}
+                />
               )}
 
               {activeSection === 'behandeling' && (
-                <div>
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold flex items-center">
-                      <span className="text-3xl mr-3">🤝</span>
-                      Behandeling
-                    </h2>
-                    <div className="text-sm text-gray-500">Stap 7 van 7</div>
-                  </div>
-
-                  {/* Praktische adviezen sectie */}
-                  <div className="mb-6">
-                    <div className="flex justify-between items-center mb-2">
-                      <h3 className="font-bold">💡 Praktische adviezen voor de behandeling</h3>
-                      <button
-                        className="text-blue-600 flex items-center text-sm"
-                        onClick={addAdvies}
-                      >
-                        <Plus size={16} className="mr-1" />
-                        Advies toevoegen
-                      </button>
-                    </div>
-
-                    {formData.behandeling.praktischeAdviezen.map((advies, index) => (
-                      <div key={index} className="flex items-start space-x-2 mb-2 p-2 border rounded bg-gray-50">
-                        <div className="flex-grow-0">
-                          <select
-                            className="p-2 border rounded-md"
-                            value={advies.emoji}
-                            onChange={(e) => updateAdvies(index, 'emoji', e.target.value)}
-                          >
-                            {emojiOptions.adviezen.map(option => (
-                              <option key={option.emoji} value={option.emoji}>
-                                {option.emoji} {option.label}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <input
-                          type="text"
-                          className="flex-grow p-2 border rounded-md"
-                          placeholder="Beschrijf het praktische advies voor behandeling/begeleiding"
-                          value={advies.tekst}
-                          onChange={(e) => updateAdvies(index, 'tekst', e.target.value)}
-                        />
-
-                        <button
-                          className="p-2 text-red-500"
-                          onClick={() => removeAdvies(index)}
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    ))}
-
-                    <div className="bg-teal-50 p-3 rounded-md mt-2 flex items-start">
-                      <HelpCircle className="text-teal-500 mr-2 flex-shrink-0 mt-1" size={18} />
-                      <p className="text-sm text-teal-700">
-                        Formuleer concrete, uitvoerbare adviezen die aansluiten bij de neuropsychologische bevindingen.
-                        Focus op praktische interventies die de patiënt, familie en behandelteam kunnen implementeren.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                <BehandelingForm
+                  formData={formData.behandeling}
+                  updateFormData={updateFormData}
+                  addAdvies={addAdvies}
+                  removeAdvies={removeAdvies}
+                  updateAdvies={updateAdvies}
+                  emojiOptions={emojiOptions}
+                />
               )}
             </>
           )}
