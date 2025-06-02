@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import App from './App'; // Zorg dat dit naar de nieuwe App.js wijst
 import reportWebVitals from './reportWebVitals';
+// import { v4 as uuidv4 } from 'uuid'; // Deze import is niet nodig in index.js, maar in usePatientData.js
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
