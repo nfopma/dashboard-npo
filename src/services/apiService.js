@@ -65,11 +65,11 @@ const createNewPatientTemplate = (name = 'Nieuwe Patiënt') => ({
     beinvloedendeFactoren: { medicatie: '', sclUitkomsten: '', motorischeSnelheid: '' },
     conclusie: { dsmClassificatie: '' },
     intelligentie: {
-      verbaalBegrip: { iqScore: 100, betrouwbaarheidsLinks: 90, betrouwbaarheidsRechts: 110, emoji: '💬', beschrijving: 'Talige kennis, redeneervermogen, woordenschat, jezelf uitdrukken' },
-      perceptueelRedeneren: { iqScore: 100, betrouwbaarheidsLinks: 90, betrouwbaarheidsRechts: 110, emoji: '👁️', beschrijving: 'Visueel-analytisch oplossingsvermogen, planning, overzicht' },
-      werkgeheugen: { iqScore: 100, betrouwbaarheidsLinks: 90, betrouwbaarheidsRechts: 110, emoji: '🧩', beschrijving: 'Informatie tijdelijk vasthouden, \'iets\' doen en tot een resultaat komen' },
-      verwerkingssnelheid: { iqScore: 100, betrouwbaarheidsLinks: 90, betrouwbaarheidsRechts: 110, emoji: '⚡', beschrijving: 'Snel en correct eenvoudige visuele informatie scannen, onderscheiden' },
-      totaalIQ: { iqScore: 100, betrouwbaarheidsLinks: 95, betrouwbaarheidsRechts: 105, emoji: '🧠', beschrijving: 'Je totale IQ score', disharmonisch: 'Ja' }
+      verbaalBegrip: { iqScore: '', betrouwbaarheidsLinks: '', betrouwbaarheidsRechts: '', emoji: '💬', beschrijving: 'Talige kennis, redeneervermogen, woordenschat, jezelf uitdrukken' },
+      perceptueelRedeneren: { iqScore: '', betrouwbaarheidsLinks: '', betrouwbaarheidsRechts: '', emoji: '👁️', beschrijving: 'Visueel-analytisch oplossingsvermogen, planning, overzicht' },
+      werkgeheugen: { iqScore: '', betrouwbaarheidsLinks: '', betrouwbaarheidsRechts: '', emoji: '🧩', beschrijving: 'Informatie tijdelijk vasthouden, \'iets\' doen en tot een resultaat komen' },
+      verwerkingssnelheid: { iqScore: '', betrouwbaarheidsLinks: '', betrouwbaarheidsRechts: '', emoji: '⚡', beschrijving: 'Snel en correct eenvoudige visuele informatie scannen, onderscheiden' },
+      totaalIQ: { iqScore: '', betrouwbaarheidsLinks: '', betrouwbaarheidsRechts: '', emoji: '🧠', beschrijving: 'Je totale IQ score', disharmonisch: 'Ja' }
     },
     behandeling: {}
   },
@@ -91,7 +91,7 @@ export const getPatients = async () => {
 
 export const addPatient = async () => {
   console.log("API: Toevoegen van nieuwe patiënt...");
-  const newPatientName = `Patiënt ${mockPatients.length}`;
+  const newPatientName = `Patiënt ${mockPatients.length + 1}`;
   const newPatient = createNewPatientTemplate(newPatientName);
   mockPatients.push(newPatient);
   return simulateNetwork(newPatient);
