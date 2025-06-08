@@ -1,86 +1,29 @@
-import { useState, useCallback } from 'react';
-import { v4 as uuidv4 } from 'uuid'; // Voor unieke IDs
-
-// Initiële data voor de testpatiënt
-const initialTestPatientData = {
-  id: 'test-patient',
-  name: 'Test Patiënt (J. Jansen)',
-  data: {
-    basisgegevens: {
-      naam: 'J. Jansen',
-      geboortedatum: '1985-05-15',
-      onderzoeksdatum: '2025-05-10',
-      onderzoeker: 'Dr. A. de Vries',
-      afdeling: 'Forensische Psychiatrie'
-    },
-    voorinformatie: {
-      opleidingsniveau: 'Havo, vwo, mbo',
-      letsel: 'Lichte hersenschudding na val in 2020',
-      middelengebruik: 'Dagelijks alcohol gebruik (4-6 glazen), cannabis recreatief in weekend'
-    },
-    beinvloedendeFactoren: {
-      medicatie: 'Sertraline 50mg dagelijks, Melatonine 3mg voor slapen',
-      sclUitkomsten: 'Verhoogde scores op depressie en angst schalen (respectievelijk 68 en 72)',
-      motorischeSnelheid: 'Lichte tremor in beide handen, mogelijk gerelateerd aan medicatie'
-    },
-    conclusie: {
-      dsmClassificatie: 'F06.7 Lichte neurocognitieve stoornis ten gevolge van multipele etiologieën'
-    },
-    intelligentie: {
-      verbaalBegrip: { iqScore: 85, betrouwbaarheidsLinks: 75, betrouwbaarheidsRechts: 95, emoji: '💬', beschrijving: 'Talige kennis, redeneervermogen, woordenschat, jezelf uitdrukken' },
-      perceptueelRedeneren: { iqScore: 102, betrouwbaarheidsLinks: 92, betrouwbaarheidsRechts: 112, emoji: '👁️', beschrijving: 'Visueel-analytisch oplossingsvermogen, planning, overzicht' },
-      werkgeheugen: { iqScore: 78, betrouwbaarheidsLinks: 68, betrouwbaarheidsRechts: 88, emoji: '🧩', beschrijving: 'Informatie tijdelijk vasthouden, \'iets\' doen en tot een resultaat komen' },
-      verwerkingssnelheid: { iqScore: 89, betrouwbaarheidsLinks: 79, betrouwbaarheidsRechts: 99, emoji: '⚡', beschrijving: 'Snel en correct eenvoudige visuele informatie scannen, onderscheiden' },
-      totaalIQ: { iqScore: 88, betrouwbaarheidsLinks: 82, betrouwbaarheidsRechts: 94, emoji: '🧠', beschrijving: 'Je totale IQ score', disharmonisch: 'Ja' }
-    },
-    // Behandeling sectie data (indien nodig, anders leeg laten)
-    behandeling: {} 
-  },
-  klachten: [
-    { tekst: 'Woordvindproblemen', emoji: '🔤' },
-    { tekst: 'Geheugenproblemen', emoji: '🧠' },
-    { tekst: 'Verhoogd alcoholgebruik', emoji: '🍺' },
-    { tekst: 'Agressie', emoji: '😠' },
-    { tekst: 'Problemen met Politie & Justitie', emoji: '👮' }
-  ],
-  belangrijksteBevindingen: [
-    { tekst: 'Verminderde werkgeheugencapaciteit beïnvloedt dagelijks functioneren', emoji: '🧩' },
-    { tekst: 'Goede verbale vaardigheden kunnen compenseren voor andere tekorten', emoji: '💬' },
-    { tekst: 'Middelengebruik heeft waarschijnlijk negatieve impact op cognitieve functies', emoji: '🍺' }
-  ],
-  praktischeAdviezen: [
-    { tekst: 'Gebruik externe geheugensteun zoals agenda\'s en notities voor dagelijkse taken', emoji: '📝' },
-    { tekst: 'Verminder alcohol consumptie tot maximaal 1-2 glazen per week', emoji: '🍺' },
-    { tekst: 'Structureer complexe taken in kleinere, overzichtelijke stappen', emoji: '🔄' }
-  ]
-};
-
-// Template voor een nieuwe, lege patiënt
-const createNewPatientTemplate = (name = 'Nieuwe Patiënt') => ({
-  id: uuidv4(),
-  name: name,
-  data: {
-    basisgegevens: { naam: name, geboortedatum: '', onderzoeksdatum: '', onderzoeker: '', afdeling: '' },
-    voorinformatie: { opleidingsniveau: '', letsel: '', middelengebruik: '' },
-    beinvloedendeFactoren: { medicatie: '', sclUitkomsten: '', motorischeSnelheid: '' },
-    conclusie: { dsmClassificatie: '' },
-    intelligentie: {
-      verbaalBegrip: { iqScore: 100, betrouwbaarheidsLinks: 90, betrouwbaarheidsRechts: 110, emoji: '💬', beschrijving: 'Talige kennis, redeneervermogen, woordenschat, jezelf uitdrukken' },
-      perceptueelRedeneren: { iqScore: 100, betrouwbaarheidsLinks: 90, betrouwbaarheidsRechts: 110, emoji: '👁️', beschrijving: 'Visueel-analytisch oplossingsvermogen, planning, overzicht' },
-      werkgeheugen: { iqScore: 100, betrouwbaarheidsLinks: 90, betrouwbaarheidsRechts: 110, emoji: '🧩', beschrijving: 'Informatie tijdelijk vasthouden, \'iets\' doen en tot een resultaat komen' },
-      verwerkingssnelheid: { iqScore: 100, betrouwbaarheidsLinks: 90, betrouwbaarheidsRechts: 110, emoji: '⚡', beschrijving: 'Snel en correct eenvoudige visuele informatie scannen, onderscheiden' },
-      totaalIQ: { iqScore: 100, betrouwbaarheidsLinks: 95, betrouwbaarheidsRechts: 105, emoji: '🧠', beschrijving: 'Je totale IQ score', disharmonisch: 'Ja' }
-    },
-    behandeling: {}
-  },
-  klachten: [{ tekst: '', emoji: '⚠️' }],
-  belangrijksteBevindingen: [{ tekst: '', emoji: '🔍' }],
-  praktischeAdviezen: [{ tekst: '', emoji: '💡' }]
-});
+import { useState, useCallback, useEffect } from 'react';
+import * as api from '../services/apiService'; // Importeer de nieuwe service
 
 const usePatientData = () => {
-  const [patients, setPatients] = useState([initialTestPatientData]);
+  const [patients, setPatients] = useState([]);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Data ophalen bij de start
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        const initialPatients = await api.getPatients();
+        setPatients(initialPatients);
+        setError(null);
+      } catch (err) {
+        setError("Kon patiëntgegevens niet laden.");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadData();
+  }, []); // Lege dependency array: alleen uitvoeren bij mount
 
   const selectedPatient = patients.find(p => p.id === selectedPatientId);
 
@@ -92,55 +35,58 @@ const usePatientData = () => {
     setSelectedPatientId(null);
   }, []);
 
-  const addPatient = useCallback(() => {
-    const newPatientName = `Patiënt ${patients.length}`; // Simpele naamgeving
-    const newPatient = createNewPatientTemplate(newPatientName);
-    setPatients(prev => [...prev, newPatient]);
-    setSelectedPatientId(newPatient.id); // Selecteer direct de nieuwe patiënt
-    return newPatient.id;
-  }, [patients]);
+  const addPatient = useCallback(async () => {
+    try {
+      const newPatient = await api.addPatient();
+      setPatients(prev => [...prev, newPatient]);
+      setSelectedPatientId(newPatient.id);
+      return newPatient.id;
+    } catch (err) {
+      setError("Kon nieuwe patiënt niet toevoegen.");
+      console.error(err);
+    }
+  }, []);
   
-  const updatePatientField = useCallback((patientId, path, value) => {
-    setPatients(prevPatients =>
-      prevPatients.map(p => {
-        if (p.id === patientId) {
-          const keys = path.split('.');
-          let current = p;
-          for (let i = 0; i < keys.length - 1; i++) {
-            if (!current[keys[i]]) current[keys[i]] = {};
-            current = current[keys[i]];
-          }
-          current[keys[keys.length - 1]] = value;
-          // Als de naam in basisgegevens wordt gewijzigd, update ook de 'name' property van de patiënt
-          if (path === 'data.basisgegevens.naam') {
-            p.name = value || 'Naamloos';
-          }
-          return { ...p }; // Zorg voor een nieuwe referentie voor state update
-        }
-        return p;
-      })
-    );
+  // Een generieke functie om een patiënt bij te werken en de state te vernieuwen
+  const handleUpdate = useCallback(async (patientId, updatedPatient) => {
+    try {
+      // Optimistic update: update de UI direct voor een snelle respons
+      setPatients(prev =>
+        prev.map(p => (p.id === patientId ? updatedPatient : p))
+      );
+      // Stuur de wijziging naar de API
+      await api.updatePatient(patientId, updatedPatient);
+    } catch (err) {
+      setError("Kon de wijziging niet opslaan.");
+      console.error(err);
+      // Hier zou je een rollback kunnen implementeren om de oude staat te herstellen
+    }
   }, []);
 
   const updateFormData = useCallback((section, field, value) => {
-    if (!selectedPatientId) return;
-    updatePatientField(selectedPatientId, `data.${section}.${field}`, value);
-  }, [selectedPatientId, updatePatientField]);
+    if (!selectedPatient) return;
+    // Maak een diepe kopie om onbedoelde mutaties te voorkomen
+    const updatedPatient = JSON.parse(JSON.stringify(selectedPatient));
+    updatedPatient.data[section][field] = value;
+    
+    if (section === 'basisgegevens' && field === 'naam') {
+      updatedPatient.name = value || 'Naamloos';
+    }
+    handleUpdate(selectedPatient.id, updatedPatient);
+  }, [selectedPatient, handleUpdate]);
 
   const updateScore = useCallback((category, field, value) => {
-    if (!selectedPatientId) return;
-    updatePatientField(selectedPatientId, `data.intelligentie.${category}.${field}`, value);
-  }, [selectedPatientId, updatePatientField]);
+    if (!selectedPatient) return;
+    const updatedPatient = JSON.parse(JSON.stringify(selectedPatient));
+    updatedPatient.data.intelligentie[category][field] = value;
+    handleUpdate(selectedPatient.id, updatedPatient);
+  }, [selectedPatient, handleUpdate]);
 
-  // Generieke list updater
   const updateList = useCallback((listName, newList) => {
-    if (!selectedPatientId) return;
-    setPatients(prevPatients =>
-      prevPatients.map(p =>
-        p.id === selectedPatientId ? { ...p, [listName]: newList } : p
-      )
-    );
-  }, [selectedPatientId]);
+    if (!selectedPatient) return;
+    const updatedPatient = { ...selectedPatient, [listName]: newList };
+    handleUpdate(selectedPatient.id, updatedPatient);
+  }, [selectedPatient, handleUpdate]);
 
   // Handlers voor Klachten lijst
   const addKlacht = useCallback(() => {
@@ -157,8 +103,8 @@ const usePatientData = () => {
 
   const updateKlacht = useCallback((index, field, value) => {
     if (!selectedPatient) return;
-    const newList = selectedPatient.klachten.map((klacht, i) =>
-      i === index ? { ...klacht, [field]: value } : klacht
+    const newList = selectedPatient.klachten.map((item, i) =>
+      i === index ? { ...item, [field]: value } : item
     );
     updateList('klachten', newList);
   }, [selectedPatient, updateList]);
@@ -178,8 +124,8 @@ const usePatientData = () => {
 
   const updateBevinding = useCallback((index, field, value) => {
     if (!selectedPatient) return;
-    const newList = selectedPatient.belangrijksteBevindingen.map((bevinding, i) =>
-      i === index ? { ...bevinding, [field]: value } : bevinding
+    const newList = selectedPatient.belangrijksteBevindingen.map((item, i) =>
+      i === index ? { ...item, [field]: value } : item
     );
     updateList('belangrijksteBevindingen', newList);
   }, [selectedPatient, updateList]);
@@ -199,8 +145,8 @@ const usePatientData = () => {
 
   const updateAdvies = useCallback((index, field, value) => {
     if (!selectedPatient) return;
-    const newList = selectedPatient.praktischeAdviezen.map((advies, i) =>
-      i === index ? { ...advies, [field]: value } : advies
+    const newList = selectedPatient.praktischeAdviezen.map((item, i) =>
+      i === index ? { ...item, [field]: value } : item
     );
     updateList('praktischeAdviezen', newList);
   }, [selectedPatient, updateList]);
@@ -209,6 +155,8 @@ const usePatientData = () => {
     patients,
     selectedPatient,
     selectedPatientId,
+    isLoading,
+    error,
     selectPatient,
     deselectPatient,
     addPatient,
