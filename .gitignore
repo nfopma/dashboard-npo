@@ -46,3 +46,15 @@ pids
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Database
+postgres-data/
+postgresql-data/
+pgdata/
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
