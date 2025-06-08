@@ -1,45 +1,43 @@
-version: '3.8'                                                                                                                                                                     
-                                                                                                                                                                                   
-services:                                                                                                                                                                          
-  frontend:                                                                                                                                                                        
-    build: ./frontend                                                                                                                                                              
-    ports:                                                                                                                                                                         
-      - "3000:3000"                                                                                                                                                                
-    volumes:                                                                                                                                                                       
-      - ./frontend:/app                                                                                                                                                            
-      - /app/node_modules                                                                                                                                                          
-    environment:                                                                                                                                                                   
-      - CHOKIDAR_USEPOLLING=true                                                                                                                                                   
-                                                                                                                                                                                   
-  backend:                                                                                                                                                                         
-    build: ./backend                                                                                                                                                               
-    ports:                                                                                                                                                                         
-      - "3001:3001"                                                                                                                                                                
-    volumes:                                                                                                                                                                       
-      - ./backend:/app                                                                                                                                                             
-      - /app/node_modules                                                                                                                                                          
-    environment:                                                                                                                                                                   
-      # Variabelen voor de database connectie                                                                                                                                      
-      - DB_HOST=db                                                                                                                                                                 
-      - DB_USER=user                                                                                                                                                               
-      - DB_PASSWORD=password                                                                                                                                                       
-      - DB_NAME=patientdb                                                                                                                                                          
-      - DB_PORT=5432                                                                                                                                                               
-    depends_on:                                                                                                                                                                    
-      - db # Zorgt ervoor dat de database start vóór de backend                                                                                                                    
-                                                                                                                                                                                   
-  db:                                                                                                                                                                              
-    image: postgres:15-alpine                                                                                                                                                      
-    restart: always                                                                                                                                                                
-    environment:                                                                                                                                                                   
-      # Deze variabelen worden gebruikt om de database te initialiseren                                                                                                            
-      - POSTGRES_USER=user                                                                                                                                                         
-      - POSTGRES_PASSWORD=password                                                                                                                                                 
-      - POSTGRES_DB=patientdb                                                                                                                                                      
-    ports:                                                                                                                                                                         
-      - "5432:5432" # Maakt de database poort beschikbaar op je computer                                                                                                           
-    volumes:                                                                                                                                                                       
-      - postgres-data:/var/lib/postgresql/data # Zorgt dat data bewaard blijft                                                                                                     
-                                                                                                                                                                                   
-volumes:                                                                                                                                                                           
-  postgres-data: # Definieert het volume voor data persistentie  
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      # Variabelen voor de database connectie
+      - DB_HOST=db
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_NAME=patientdb
+      - DB_PORT=5432
+    depends_on:
+      - db # Zorgt ervoor dat de database start vóór de backend
+
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      # Deze variabelen worden gebruikt om de database te initialiseren
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=patientdb
+    ports:
+      - "5432:5432" # Maakt de database poort beschikbaar op je computer
+    volumes:
+      - postgres-data:/var/lib/postgresql/data # Zorgt dat data bewaard blijft
+
+volumes:
+  postgres-data: # Definieert het volume voor data persistentie
