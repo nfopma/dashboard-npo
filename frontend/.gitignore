@@ -24,14 +24,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-
-# Aider AI assistant
 .aider*
-.aider.chat.history.md
-.aider.tags.cache.v3/
-.aider.input.history
-.aider.ident.cache.v1/
-aider.chat.history.md
 
 # Runtime data
 pids
