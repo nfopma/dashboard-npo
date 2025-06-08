@@ -75,7 +75,7 @@ const BehandelaarInvoerDashboard = ({
           <input
             type="number" min="50" max="150" className="w-full p-2 border rounded-md"
             value={data.iqScore}
-            onChange={(e) => updateScore(categorie.key, 'iqScore', parseInt(e.target.value) || 0)}
+            onChange={(e) => updateScore(categorie.key, 'iqScore', e.target.value)}
           />
         </div>
         <div>
@@ -83,7 +83,7 @@ const BehandelaarInvoerDashboard = ({
           <input
             type="number" min="50" max="150" className="w-full p-2 border rounded-md"
             value={data.betrouwbaarheidsLinks}
-            onChange={(e) => updateScore(categorie.key, 'betrouwbaarheidsLinks', parseInt(e.target.value) || 0)}
+            onChange={(e) => updateScore(categorie.key, 'betrouwbaarheidsLinks', e.target.value)}
           />
         </div>
         <div>
@@ -91,7 +91,7 @@ const BehandelaarInvoerDashboard = ({
           <input
             type="number" min="50" max="150" className="w-full p-2 border rounded-md"
             value={data.betrouwbaarheidsRechts}
-            onChange={(e) => updateScore(categorie.key, 'betrouwbaarheidsRechts', parseInt(e.target.value) || 0)}
+            onChange={(e) => updateScore(categorie.key, 'betrouwbaarheidsRechts', e.target.value)}
           />
         </div>
       </div>
