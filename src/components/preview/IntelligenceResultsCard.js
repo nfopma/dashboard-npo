@@ -78,6 +78,16 @@ const IntelligenceResultsCard = ({ formData, emojiSize }) => {
                 }}>
               </div>
 
+              {/* Marker voor gemiddelde IQ (100) */}
+              <div
+                className="absolute top-2 h-4 w-px bg-black"
+                style={{
+                  left: `${getIQPositie(100)}%`,
+                  transform: 'translateX(-0.5px)'
+                }}
+                title="Gemiddelde IQ (100)"
+              ></div>
+
               <div
                 className="absolute"
                 style={{
