@@ -71,7 +71,7 @@ const IntelligenceResultsCard = ({ formData, emojiSize }) => {
               </div>
 
               <div
-                className="absolute top-1 h-2 bg-white opacity-40 rounded"
+                className="absolute top-2 h-4 bg-white opacity-50 rounded"
                 style={{
                   left: `${getIQPositie(data.betrouwbaarheidsLinks)}%`,
                   width: `${getIQPositie(data.betrouwbaarheidsRechts) - getIQPositie(data.betrouwbaarheidsLinks)}%`
