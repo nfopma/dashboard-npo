@@ -27,6 +27,9 @@ services:
       - NODE_ENV=development
     depends_on:
       - db # Zorgt ervoor dat de database start vóór de backend
+    # Dit commando overschrijft de CMD in de Dockerfile en is specifiek voor ontwikkeling.
+    # Het installeert alle dependencies en start dan de dev server.
+    command: sh -c "npm install && npm run dev"
 
   db:
     image: postgres:15-alpine
