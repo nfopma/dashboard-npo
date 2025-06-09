@@ -46,6 +46,26 @@ const usePatientData = () => {
       console.error(err);
     }
   }, []);
+
+  const deletePatient = useCallback(async (patientId) => {
+    if (!patientId) return;
+    try {
+      // Optimistic delete
+      const originalPatients = [...patients];
+      const patientsAfterDelete = patients.filter(p => p.id !== patientId);
+      setPatients(patientsAfterDelete);
+      if (selectedPatientId === patientId) {
+        setSelectedPatientId(null);
+      }
+      
+      await api.deletePatient(patientId);
+
+    } catch (err) {
+      setError("Kon patiënt niet verwijderen.");
+      console.error(err);
+      // Rollback in case of error could be implemented here
+    }
+  }, [patients, selectedPatientId]);
   
   // Een generieke functie om een patiënt bij te werken en de state te vernieuwen
   const handleUpdate = useCallback(async (patientId, updatedPatient) => {
@@ -56,7 +76,8 @@ const usePatientData = () => {
       );
       // Stuur de wijziging naar de API
       await api.updatePatient(patientId, updatedPatient);
-    } catch (err) {
+    } catch (err)
+     {
       setError("Kon de wijziging niet opslaan.");
       console.error(err);
       // Hier zou je een rollback kunnen implementeren om de oude staat te herstellen
@@ -160,6 +181,7 @@ const usePatientData = () => {
     selectPatient,
     deselectPatient,
     addPatient,
+    deletePatient,
     updateFormData,
     updateScore,
     addKlacht,

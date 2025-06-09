@@ -8,6 +8,8 @@ services:
       - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
+      # De URL van de backend API, zodat de frontend weet waar de API te vinden is.
+      - REACT_APP_API_URL=http://localhost:3001/api
 
   backend:
     build: ./backend
@@ -16,26 +18,25 @@ services:
     volumes:
       - ./backend:/app
       - /app/node_modules
+    # Laad de omgevingsvariabelen uit het .env bestand
+    env_file:
+      - .env
     environment:
-      # Variabelen voor de database connectie
+      # Overschrijf DB_HOST om de interne servicenaam van Docker te gebruiken
       - DB_HOST=db
-      - DB_USER=user
-      - DB_PASSWORD=password
-      - DB_NAME=patientdb
-      - DB_PORT=5432
+      - NODE_ENV=development
     depends_on:
       - db # Zorgt ervoor dat de database start vóór de backend
 
   db:
     image: postgres:15-alpine
     restart: always
-    environment:
-      # Deze variabelen worden gebruikt om de database te initialiseren
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=patientdb
+    # Laad de database credentials uit het .env bestand
+    env_file:
+      - .env
     ports:
-      - "5432:5432" # Maakt de database poort beschikbaar op je computer
+      # Maakt de database poort beschikbaar op je computer voor tools zoals DBeaver
+      - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data # Zorgt dat data bewaard blijft
 
