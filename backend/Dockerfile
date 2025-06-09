@@ -7,8 +7,8 @@ WORKDIR /app
 # Kopieer package.json en package-lock.json
 COPY package*.json ./
 
-# Installeer ALLEEN productie dependencies voor een schone, kleine image
-RUN npm install --omit=dev
+# Installeer alle dependencies (inclusief devDependencies zoals nodemon)
+RUN npm install
 
 # Kopieer de rest van de applicatiecode
 COPY . .
@@ -16,5 +16,5 @@ COPY . .
 # Maak de poort waarop de server draait beschikbaar
 EXPOSE 3001
 
-# Het standaard commando voor productie
-CMD [ "npm", "start" ]
+# Het standaard commando voor ontwikkeling met hot-reload
+CMD [ "npm", "run", "dev" ]
