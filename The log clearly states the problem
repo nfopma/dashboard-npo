@@ -1,5 +1,0 @@
-npm error code EJSONPARSE
-npm error path /app/package.json
-npm error JSON.parse Unexpected token "/" (0x2F) in JSON at position 0 while parsing near "// backend/package.j..."
-npm error JSON.parse Failed to parse JSON data.
-npm error JSON.parse Note: package.json must be actual JSON, not just JavaScript.
