@@ -7,8 +7,16 @@ const db = require('./db');
 const app = express();
 const port = process.env.PORT || 3001;
 
+// Dynamische CORS configuratie.
+// Op Render wordt CORS_ORIGIN de URL van de live frontend.
+// Lokaal gebruiken we een fallback naar de standaard React dev server URL.
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  optionsSuccessStatus: 200,
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json()); // Body parser voor JSON
 
 // --- API Routes ---

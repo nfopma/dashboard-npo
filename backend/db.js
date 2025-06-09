@@ -1,11 +1,15 @@
 const { Pool } = require('pg');
 
+// De Pool constructor is slim. Als process.env.DATABASE_URL bestaat (zoals op Render),
+// gebruikt hij die connectie-string. Anders valt hij terug op de losse variabelen
+// (DB_HOST, DB_USER, etc.) die we lokaal via docker-compose en .env instellen.
 const pool = new Pool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
+  connectionString: process.env.DATABASE_URL,
+  // Render vereist een SSL-verbinding voor zijn databases in productie.
+  // Lokaal (in Docker) willen we dit niet.
+  ssl: process.env.NODE_ENV === 'production' 
+    ? { rejectUnauthorized: false } 
+    : false,
 });
 
 const initDb = async () => {
