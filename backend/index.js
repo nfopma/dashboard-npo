@@ -52,7 +52,13 @@ app.post('/api/patients', async (req, res) => {
 // PUT /api/patients/:id - Werk een bestaande patiënt bij
 app.put('/api/patients/:id', async (req, res) => {
   const { id } = req.params;
-  const { name, data, klachten, belangrijksteBevindingen, praktischeAdviezen } = req.body;
+  const {
+    name,
+    data,
+    klachten = [],
+    belangrijksteBevindingen = [],
+    praktischeAdviezen = []
+  } = req.body;
 
   try {
     const { rows } = await db.query(
