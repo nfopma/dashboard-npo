@@ -6,6 +6,10 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    # Laad de omgevingsvariabelen uit het .env bestand
+    # Dit is nodig voor de Supabase URL en Anon Key
+    env_file:
+      - .env
     environment:
       - CHOKIDAR_USEPOLLING=true
       # De URL van de backend API, zodat de frontend weet waar de API te vinden is.
@@ -19,29 +23,15 @@ services:
       - ./backend:/app
       - /app/node_modules
     # Laad de omgevingsvariabelen uit het .env bestand
+    # Dit bevat nu de Supabase keys en de DATABASE_URL naar Supabase
     env_file:
       - .env
     environment:
-      # Overschrijf DB_HOST om de interne servicenaam van Docker te gebruiken
-      - DB_HOST=db
       - NODE_ENV=development
-    depends_on:
-      - db # Zorgt ervoor dat de database start vóór de backend
-    # Dit commando overschrijft de CMD in de Dockerfile en is specifiek voor ontwikkeling.
-    # Het installeert alle dependencies en start dan de dev server.
+    # De lokale 'db' service is niet meer nodig, de backend verbindt direct met Supabase.
     command: sh -c "npm install && npm run dev"
 
-  db:
-    image: postgres:15-alpine
-    restart: always
-    # Laad de database credentials uit het .env bestand
-    env_file:
-      - .env
-    ports:
-      # Maakt de database poort beschikbaar op je computer voor tools zoals DBeaver
-      - "5432:5432"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data # Zorgt dat data bewaard blijft
-
+# De lokale postgres database is niet meer nodig, we gebruiken Supabase.
+# Het 'volumes' blok kan ook weg als er geen andere volumes zijn.
 volumes:
-  postgres-data: # Definieert het volume voor data persistentie
+  postgres-data:

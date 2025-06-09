@@ -1,18 +1,27 @@
 import { useState, useCallback, useEffect } from 'react';
-import * as api from '../services/apiService'; // Importeer de nieuwe service
+import * as api from '../services/apiService';
+import { useAuth } from '../contexts/AuthContext'; // Importeer de auth hook
 
 const usePatientData = () => {
+  const { session } = useAuth(); // Haal de sessie (inlogstatus) op
   const [patients, setPatients] = useState([]);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Data ophalen bij de start
+  // Data ophalen, maar alleen als de gebruiker is ingelogd
   useEffect(() => {
     const loadData = async () => {
+      // Als er geen sessie is, toon lege data en stop met laden.
+      if (!session) {
+        setPatients([]);
+        setIsLoading(false);
+        return;
+      }
       try {
         setIsLoading(true);
-        const initialPatients = await api.getPatients();
+        const token = session.access_token;
+        const initialPatients = await api.getPatients(token);
         setPatients(initialPatients);
         setError(null);
       } catch (err) {
@@ -23,7 +32,7 @@ const usePatientData = () => {
       }
     };
     loadData();
-  }, []); // Lege dependency array: alleen uitvoeren bij mount
+  }, [session]); // Deze effect-hook draait opnieuw als de sessie verandert
 
   const selectedPatient = patients.find(p => p.id === selectedPatientId);
 
@@ -36,8 +45,10 @@ const usePatientData = () => {
   }, []);
 
   const addPatient = useCallback(async () => {
+    if (!session) return;
     try {
-      const newPatient = await api.addPatient();
+      const token = session.access_token;
+      const newPatient = await api.addPatient(token);
       setPatients(prev => [...prev, newPatient]);
       setSelectedPatientId(newPatient.id);
       return newPatient.id;
@@ -45,12 +56,12 @@ const usePatientData = () => {
       setError("Kon nieuwe patiënt niet toevoegen.");
       console.error(err);
     }
-  }, []);
+  }, [session]);
 
   const deletePatient = useCallback(async (patientId) => {
-    if (!patientId) return;
+    if (!patientId || !session) return;
     try {
-      // Optimistic delete
+      const token = session.access_token;
       const originalPatients = [...patients];
       const patientsAfterDelete = patients.filter(p => p.id !== patientId);
       setPatients(patientsAfterDelete);
@@ -58,35 +69,31 @@ const usePatientData = () => {
         setSelectedPatientId(null);
       }
       
-      await api.deletePatient(patientId);
+      await api.deletePatient(token, patientId);
 
     } catch (err) {
       setError("Kon patiënt niet verwijderen.");
       console.error(err);
-      // Rollback in case of error could be implemented here
+      // Rollback kan hier geïmplementeerd worden
     }
-  }, [patients, selectedPatientId]);
+  }, [patients, selectedPatientId, session]);
   
-  // Een generieke functie om een patiënt bij te werken en de state te vernieuwen
   const handleUpdate = useCallback(async (patientId, updatedPatient) => {
+    if (!session) return;
     try {
-      // Optimistic update: update de UI direct voor een snelle respons
+      const token = session.access_token;
       setPatients(prev =>
         prev.map(p => (p.id === patientId ? updatedPatient : p))
       );
-      // Stuur de wijziging naar de API
-      await api.updatePatient(patientId, updatedPatient);
-    } catch (err)
-     {
+      await api.updatePatient(token, patientId, updatedPatient);
+    } catch (err) {
       setError("Kon de wijziging niet opslaan.");
       console.error(err);
-      // Hier zou je een rollback kunnen implementeren om de oude staat te herstellen
     }
-  }, []);
+  }, [session]);
 
   const updateFormData = useCallback((section, field, value) => {
     if (!selectedPatient) return;
-    // Maak een diepe kopie om onbedoelde mutaties te voorkomen
     const updatedPatient = JSON.parse(JSON.stringify(selectedPatient));
     updatedPatient.data[section][field] = value;
     
@@ -109,7 +116,9 @@ const usePatientData = () => {
     handleUpdate(selectedPatient.id, updatedPatient);
   }, [selectedPatient, handleUpdate]);
 
-  // Handlers voor Klachten lijst
+  // De handlers voor lijsten (add/remove/update) blijven ongewijzigd,
+  // omdat ze `updateList` aanroepen, die al sessie-bewust is via `handleUpdate`.
+
   const addKlacht = useCallback(() => {
     if (!selectedPatient) return;
     const newList = [...selectedPatient.klachten, { tekst: '', emoji: '⚠️' }];
@@ -130,7 +139,6 @@ const usePatientData = () => {
     updateList('klachten', newList);
   }, [selectedPatient, updateList]);
 
-  // Handlers voor Belangrijkste Bevindingen lijst
   const addBevinding = useCallback(() => {
     if (!selectedPatient) return;
     const newList = [...selectedPatient.belangrijksteBevindingen, { tekst: '', emoji: '🔍' }];
@@ -151,7 +159,6 @@ const usePatientData = () => {
     updateList('belangrijksteBevindingen', newList);
   }, [selectedPatient, updateList]);
 
-  // Handlers voor Praktische Adviezen lijst
   const addAdvies = useCallback(() => {
     if (!selectedPatient) return;
     const newList = [...selectedPatient.praktischeAdviezen, { tekst: '', emoji: '💡' }];

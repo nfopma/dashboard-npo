@@ -12,11 +12,16 @@ const pool = new Pool({
     : false,
 });
 
+// Deze functie is nu minder relevant omdat het schema beheerd wordt in Supabase,
+// maar kan nuttig zijn voor het opzetten van een lokale testdatabase.
 const initDb = async () => {
   try {
+    // We voegen user_id toe, die verwijst naar de gebruiker in Supabase auth.
+    // De foreign key relatie wordt in de Supabase UI of via een migratie gelegd.
     await pool.query(`
       CREATE TABLE IF NOT EXISTS patients (
         id UUID PRIMARY KEY,
+        user_id UUID, 
         name VARCHAR(255) NOT NULL,
         data JSONB,
         klachten JSONB,
@@ -62,8 +67,10 @@ const initDb = async () => {
 
 // Helper functie om object keys van snake_case (db) naar camelCase (js) te converteren
 const dbToCamelCase = (row) => {
+  if (!row) return null;
   return {
     id: row.id,
+    userId: row.user_id,
     name: row.name,
     data: row.data,
     klachten: row.klachten,
