@@ -1,0 +1,3 @@
+# Voorkom dat de lokale node_modules en .env in de image worden gekopieerd
+node_modules
+.env
