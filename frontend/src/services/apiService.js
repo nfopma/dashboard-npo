@@ -29,18 +29,35 @@ const createNewPatientTemplate = (name = 'Nieuwe Patiënt') => ({
 
 // --- API Functies ---
 
+// Helper functie voor betere foutafhandeling
+const handleResponse = async (response) => {
+  if (response.ok) {
+    // Voor 204 No Content (DELETE), is er geen JSON body
+    if (response.status === 204) {
+      return;
+    }
+    return response.json();
+  }
+
+  // Probeer de JSON error body van de backend te lezen
+  const errorData = await response.json().catch(() => ({
+    error: `HTTP-fout: ${response.status} ${response.statusText}`
+  }));
+  
+  console.error("Backend error:", errorData);
+  throw new Error(errorData.error || 'Er is een onbekende fout opgetreden.');
+};
+
+
 export const getPatients = async () => {
   console.log("API: Ophalen van alle patiënten via backend...");
   const response = await fetch(`${API_URL}/patients`);
-  if (!response.ok) {
-    throw new Error('Netwerkfout bij ophalen patiënten.');
-  }
-  return response.json();
+  return handleResponse(response);
 };
 
-export const addPatient = async () => {
-  console.log("API: Toevoegen van nieuwe patiënt via backend...");
-  const newPatientTemplate = createNewPatientTemplate();
+export const addPatient = async (name = 'Nieuwe Patiënt') => {
+  console.log(`API: Toevoegen van nieuwe patiënt met naam "${name}" via backend...`);
+  const newPatientTemplate = createNewPatientTemplate(name);
   
   const response = await fetch(`${API_URL}/patients`, {
     method: 'POST',
@@ -50,10 +67,7 @@ export const addPatient = async () => {
     body: JSON.stringify(newPatientTemplate),
   });
 
-  if (!response.ok) {
-    throw new Error('Netwerkfout bij toevoegen patiënt.');
-  }
-  return response.json();
+  return handleResponse(response);
 };
 
 export const updatePatient = async (patientId, updatedPatientData) => {
@@ -66,10 +80,7 @@ export const updatePatient = async (patientId, updatedPatientData) => {
     body: JSON.stringify(updatedPatientData),
   });
 
-  if (!response.ok) {
-    throw new Error('Netwerkfout bij bijwerken patiënt.');
-  }
-  return response.json();
+  return handleResponse(response);
 };
 
 export const deletePatient = async (patientId) => {
@@ -78,9 +89,5 @@ export const deletePatient = async (patientId) => {
     method: 'DELETE',
   });
 
-  if (!response.ok && response.status !== 204) {
-    throw new Error('Netwerkfout bij verwijderen patiënt.');
-  }
-  // Geen body verwacht bij een 204 No Content response
-  return;
+  return handleResponse(response);
 };
