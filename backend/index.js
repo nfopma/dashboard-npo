@@ -26,7 +26,13 @@ app.get('/api/patients', async (req, res) => {
 
 // POST /api/patients - Maak een nieuwe patiënt aan
 app.post('/api/patients', async (req, res) => {
-  const { name, data, klachten, belangrijksteBevindingen, praktischeAdviezen } = req.body;
+  const {
+    name,
+    data,
+    klachten = [],
+    belangrijksteBevindingen = [],
+    praktischeAdviezen = []
+  } = req.body;
   const newId = uuidv4();
 
   try {
