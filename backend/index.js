@@ -40,7 +40,14 @@ app.post('/api/patients', async (req, res) => {
       `INSERT INTO patients (id, name, data, klachten, belangrijkste_bevindingen, praktische_adviezen)
        VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
-      [newId, name, data, klachten, belangrijksteBevindingen, praktischeAdviezen]
+      [
+        newId,
+        name,
+        JSON.stringify(data || {}),
+        JSON.stringify(klachten),
+        JSON.stringify(belangrijksteBevindingen),
+        JSON.stringify(praktischeAdviezen)
+      ]
     );
     res.status(201).json(db.dbToCamelCase(rows[0]));
   } catch (err) {
@@ -66,7 +73,14 @@ app.put('/api/patients/:id', async (req, res) => {
        SET name = $1, data = $2, klachten = $3, belangrijkste_bevindingen = $4, praktische_adviezen = $5, updated_at = NOW()
        WHERE id = $6
        RETURNING *`,
-      [name, data, klachten, belangrijksteBevindingen, praktischeAdviezen, id]
+      [
+        name,
+        JSON.stringify(data || {}),
+        JSON.stringify(klachten),
+        JSON.stringify(belangrijksteBevindingen),
+        JSON.stringify(praktischeAdviezen),
+        id
+      ]
     );
 
     if (rows.length === 0) {
