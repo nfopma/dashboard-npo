@@ -2,7 +2,9 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "3000:3000"
+      # Pas de poortmapping aan: map host-poort 3001 naar container-poort 3001
+      # Dit komt overeen met de poort waarop de React dev server daadwerkelijk draait.
+      - "3001:3001"
     volumes:
       - ./frontend:/app
       # Verwijder de volgende regel om te voorkomen dat lokale node_modules
@@ -30,7 +32,8 @@ services:
       - .env
     environment:
       - NODE_ENV=development
-    command: sh -c "npm install && npm run dev"
+    # Verwijder 'npm install' uit de command, deze wordt al in de Dockerfile uitgevoerd.
+    command: npm run dev
 
 # De lokale postgres database is niet meer nodig, we gebruiken Supabase.
 # Het 'volumes' blok kan nu volledig verwijderd worden als er geen andere volumes zijn.
