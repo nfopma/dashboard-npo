@@ -33,6 +33,10 @@ input[type=number] {
   display: none;
 }
 
+.print-main-title {
+  display: none;
+}
+
 @media print {
   .no-print {
     display: none !important;
@@ -44,8 +48,17 @@ input[type=number] {
     page-break-after: always;
   }
 
+  .print-page {
+    @apply flex flex-col items-center justify-center h-screen;
+  }
+
   .print-section-title {
     @apply text-2xl font-bold mb-4;
+    display: block;
+  }
+
+  .print-main-title {
+    @apply text-4xl font-bold mb-2;
     display: block;
   }
 
