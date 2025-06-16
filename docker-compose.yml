@@ -31,5 +31,5 @@ services:
       - .env
     environment:
       - NODE_ENV=development
-    # Gebruik 'npm start' of de juiste command om de backend server te starten
-    command: npm start
+    # Gebruik 'npm run dev' voor de backend, zoals oorspronkelijk bedoeld voor hot-reloading
+    command: npm run dev

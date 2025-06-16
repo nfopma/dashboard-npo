@@ -18,4 +18,5 @@ COPY . .
 EXPOSE 3000
 
 # Het commando om de React dev-server te starten
-CMD [ "npm", "start" ]
+# Stel expliciet de PORT omgevingsvariabele in voor de frontend
+CMD [ "sh", "-c", "PORT=3000 npm start" ]
