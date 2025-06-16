@@ -153,8 +153,8 @@ app.delete('/api/patients/:id', async (req, res) => {
 
 // Start de server
 const startServer = async () => {
-  // We initialiseren de DB niet meer vanuit de code, dit wordt beheerd in Supabase.
-  // await db.initDb(); 
+  // De initDb functie is nu alleen een verbindingstest.
+  await db.initDb(); 
   app.listen(port, () => {
     console.log(`Backend server draait op http://localhost:${port}`);
   });

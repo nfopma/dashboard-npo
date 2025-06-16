@@ -28,10 +28,8 @@ services:
       - .env
     environment:
       - NODE_ENV=development
-    # De lokale 'db' service is niet meer nodig, de backend verbindt direct met Supabase.
     command: sh -c "npm install && npm run dev"
 
 # De lokale postgres database is niet meer nodig, we gebruiken Supabase.
-# Het 'volumes' blok kan ook weg als er geen andere volumes zijn.
-volumes:
-  postgres-data:
+# Het 'volumes' blok kan nu volledig verwijderd worden als er geen andere volumes zijn.
+# Voor dit project is het 'postgres-data' volume niet meer relevant.
