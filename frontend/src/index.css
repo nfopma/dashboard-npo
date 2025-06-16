@@ -86,4 +86,11 @@ input[type=number] {
     padding: 0 !important;
     margin: 0 !important;
   }
+
+  /* Verwijder vaste schermhoogtes bij afdrukken */
+  .h-screen,
+  .min-h-screen {
+    height: auto !important;
+    min-height: auto !important;
+  }
 }
