@@ -16,21 +16,55 @@ const pool = new Pool({
 // maar kan nuttig zijn voor het opzetten van een lokale testdatabase.
 const initDb = async () => {
   try {
-    // We voegen user_id toe, die verwijst naar de gebruiker in Supabase auth.
-    // De foreign key relatie wordt in de Supabase UI of via een migratie gelegd.
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS patients (
-        id UUID PRIMARY KEY,
-        user_id UUID, 
-        name VARCHAR(255) NOT NULL,
-        data JSONB,
-        klachten JSONB,
-        belangrijkste_bevindingen JSONB,
-        praktische_adviezen JSONB,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    // Controleer of de 'patients' tabel bestaat
+    const tableExists = await pool.query(`
+      SELECT EXISTS (
+        SELECT 1
+        FROM information_schema.tables
+        WHERE table_schema = 'public'
+        AND table_name = 'patients'
       );
     `);
+
+    if (!tableExists.rows[0].exists) {
+      // Als de tabel niet bestaat, maak deze dan aan
+      await pool.query(`
+        CREATE TABLE patients (
+          id UUID PRIMARY KEY,
+          user_id UUID, 
+          name VARCHAR(255) NOT NULL,
+          data JSONB,
+          klachten JSONB,
+          belangrijkste_bevindingen JSONB,
+          praktische_adviezen JSONB,
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      console.log('Tabel "patients" aangemaakt.');
+    } else {
+      // Als de tabel wel bestaat, controleer dan op ontbrekende kolommen en voeg ze toe
+      console.log('Tabel "patients" bestaat al. Controleren op ontbrekende kolommen...');
+
+      const columns = await pool.query(`
+        SELECT column_name FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'patients';
+      `);
+      const columnNames = columns.rows.map(row => row.column_name);
+
+      const requiredColumns = {
+        user_id: 'UUID',
+        created_at: 'TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP',
+        updated_at: 'TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP'
+      };
+
+      for (const colName in requiredColumns) {
+        if (!columnNames.includes(colName)) {
+          await pool.query(`ALTER TABLE patients ADD COLUMN ${colName} ${requiredColumns[colName]};`);
+          console.log(`Kolom '${colName}' toegevoegd aan tabel 'patients'.`);
+        }
+      }
+    }
 
     // Functie om de 'updated_at' timestamp automatisch bij te werken
     await pool.query(`
@@ -55,9 +89,12 @@ const initDb = async () => {
         FOR EACH ROW
         EXECUTE FUNCTION trigger_set_timestamp();
       `);
+      console.log('Trigger "set_timestamp_patients" aangemaakt.');
+    } else {
+      console.log('Trigger "set_timestamp_patients" bestaat al.');
     }
 
-    console.log('Database table "patients" is geïnitialiseerd.');
+    console.log('Database table "patients" is geïnitialiseerd/gecontroleerd.');
   } catch (err) {
     console.error('Fout bij initialiseren van de database:', err);
     // Stop het proces als de database niet geïnitialiseerd kan worden
