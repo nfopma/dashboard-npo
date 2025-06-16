@@ -27,7 +27,7 @@ const PreviewTabs = ({ formData, klachten, belangrijksteBevindingen, praktischeA
   ];
 
   return (
-    <div>
+    <div id="print-area">
       <div className="flex mb-4 space-x-2 no-print">
         {tabs.map(tab => (
           <button
