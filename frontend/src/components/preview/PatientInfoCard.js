@@ -1,5 +1,5 @@
 import React from 'react';
-import { getEmojiSizeClass } from '../../utils/emojiUtils';
+import { getEmojiSizeClass, getEmojiLabel } from '../../utils/emojiUtils';
 
 const PatientInfoCard = ({ formData, klachten, emojiSize }) => {
   return (
@@ -32,6 +32,7 @@ const PatientInfoCard = ({ formData, klachten, emojiSize }) => {
           {klachten.map((klacht, index) => (
             <li key={index} className="flex items-center">
               <span className={`mr-3 ${getEmojiSizeClass(emojiSize, 'normal')}`}>{klacht.emoji}</span>
+              <span className="font-semibold mr-1">{getEmojiLabel('klachten', klacht.emoji)}</span>
               {klacht.tekst}
             </li>
           ))}

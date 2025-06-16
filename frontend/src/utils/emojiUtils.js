@@ -9,3 +9,13 @@ export const getEmojiSizeClass = (emojiSize, type = 'normal') => {
   };
   return sizes[emojiSize][type] || sizes[2][type];
 };
+
+// Haal het label op dat hoort bij een emoji binnen een bepaalde sectie
+// sectionKey verwijst naar de sleutel in emojiOptions (bijv. 'klachten' of 'adviezen')
+import emojiOptions from '../config/emojiOptions';
+
+export const getEmojiLabel = (sectionKey, emoji) => {
+  const options = emojiOptions[sectionKey] || [];
+  const match = options.find(option => option.emoji === emoji);
+  return match ? match.label : '';
+};

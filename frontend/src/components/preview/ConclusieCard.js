@@ -1,5 +1,5 @@
 import React from 'react';
-import { getEmojiSizeClass } from '../../utils/emojiUtils';
+import { getEmojiSizeClass, getEmojiLabel } from '../../utils/emojiUtils';
 
 const ConclusieCard = ({ formData, belangrijksteBevindingen, praktischeAdviezen, emojiSize }) => {
   return (
@@ -17,6 +17,7 @@ const ConclusieCard = ({ formData, belangrijksteBevindingen, praktischeAdviezen,
               {belangrijksteBevindingen.map((bevinding, index) => (
                 <li key={index} className="text-sm flex items-center">
                   <span className={`mr-3 ${getEmojiSizeClass(emojiSize, 'normal')}`}>{bevinding.emoji}</span>
+                  <span className="font-semibold mr-1">{getEmojiLabel('bevindingen', bevinding.emoji)}</span>
                   {bevinding.tekst}
                 </li>
               ))}
@@ -46,6 +47,7 @@ const ConclusieCard = ({ formData, belangrijksteBevindingen, praktischeAdviezen,
             {praktischeAdviezen.map((advies, index) => (
               <li key={index} className="text-sm flex items-center">
                 <span className={`mr-3 ${getEmojiSizeClass(emojiSize, 'normal')}`}>{advies.emoji}</span>
+                <span className="font-semibold mr-1">{getEmojiLabel('adviezen', advies.emoji)}</span>
                 {advies.tekst}
               </li>
             ))}
