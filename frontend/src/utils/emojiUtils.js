@@ -1,3 +1,5 @@
+import emojiOptions from '../config/emojiOptions';
+
 // Functie om emoji grootte klasse te bepalen
 export const getEmojiSizeClass = (emojiSize, type = 'normal') => {
   const sizes = {
@@ -12,7 +14,6 @@ export const getEmojiSizeClass = (emojiSize, type = 'normal') => {
 
 // Haal het label op dat hoort bij een emoji binnen een bepaalde sectie
 // sectionKey verwijst naar de sleutel in emojiOptions (bijv. 'klachten' of 'adviezen')
-import emojiOptions from '../config/emojiOptions';
 
 export const getEmojiLabel = (sectionKey, emoji) => {
   const options = emojiOptions[sectionKey] || [];
