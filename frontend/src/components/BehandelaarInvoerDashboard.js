@@ -29,7 +29,8 @@ const BehandelaarInvoerDashboard = ({
   // State voor actieve sectie en preview modus, emojiSize lokaal voor dit dashboard
   const [activeSection, setActiveSection] = useState('basisgegevens');
   const [previewMode, setPreviewMode] = useState(false);
-  const [emojiSize, setEmojiSize] = useState(2); // 1=klein, 2=medium, 3=groot, 4=extra groot
+  // Emoji grootte: 1=XS, 2=S, 3=M, 4=L, 5=XL
+  const [emojiSize, setEmojiSize] = useState(4);
 
   if (!patient) {
     return (

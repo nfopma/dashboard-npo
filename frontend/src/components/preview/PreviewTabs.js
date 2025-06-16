@@ -5,27 +5,24 @@ import ConclusieCard from './ConclusieCard';
 
 const PreviewTabs = ({ formData, klachten, belangrijksteBevindingen, praktischeAdviezen, emojiSize }) => {
   const [activeTab, setActiveTab] = useState('voorblad');
+  const activeClass = 'bg-blue-600 text-white';
+  const inactiveClass = 'bg-blue-200 text-blue-700';
+
   const tabs = [
     {
       id: 'voorblad',
       label: 'Voorblad',
-      emoji: '📄',
-      activeClass: 'bg-pink-600 text-white',
-      inactiveClass: 'bg-pink-200 text-pink-700'
+      emoji: '📄'
     },
     {
       id: 'onderzoeksresultaten',
       label: 'Onderzoeksresultaten',
-      emoji: '🧠',
-      activeClass: 'bg-yellow-600 text-white',
-      inactiveClass: 'bg-yellow-200 text-yellow-700'
+      emoji: '🧠'
     },
     {
       id: 'conclusie',
       label: 'Conclusie & behandeling',
-      emoji: '✅',
-      activeClass: 'bg-green-600 text-white',
-      inactiveClass: 'bg-green-200 text-green-700'
+      emoji: '✅'
     }
   ];
 
@@ -37,7 +34,7 @@ const PreviewTabs = ({ formData, klachten, belangrijksteBevindingen, praktischeA
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex-1 px-4 py-2 rounded-md text-center ${
-              activeTab === tab.id ? tab.activeClass : tab.inactiveClass
+              activeTab === tab.id ? activeClass : inactiveClass
             }`}
           >
             <span className="mr-1">{tab.emoji}</span>
