@@ -8,9 +8,7 @@ import BeinvloedendeFactorenForm from './BeinvloedendeFactorenForm';
 import IntelligentieForm from './IntelligentieForm'; // <-- Nieuw, schoon formulier
 import ConclusieForm from './ConclusieForm';
 import BehandelingForm from './BehandelingForm';
-import PatientInfoCard from './preview/PatientInfoCard';
-import IntelligenceResultsCard from './preview/IntelligenceResultsCard';
-import ConclusieCard from './preview/ConclusieCard';
+import PreviewTabs from './preview/PreviewTabs';
 
 // Behandelaar invoerscherm voor Neuropsychologisch Dashboard
 const BehandelaarInvoerDashboard = ({
@@ -85,11 +83,13 @@ const BehandelaarInvoerDashboard = ({
 
         <div className="bg-white rounded-lg shadow p-6">
           {previewMode ? (
-            <div> {/* Preview Modus */}
-              <PatientInfoCard formData={formData} klachten={klachten} emojiSize={emojiSize} />
-              <IntelligenceResultsCard formData={formData} emojiSize={emojiSize} />
-              <ConclusieCard formData={formData} belangrijksteBevindingen={belangrijksteBevindingen} praktischeAdviezen={praktischeAdviezen} emojiSize={emojiSize} />
-            </div>
+            <PreviewTabs
+              formData={formData}
+              klachten={klachten}
+              belangrijksteBevindingen={belangrijksteBevindingen}
+              praktischeAdviezen={praktischeAdviezen}
+              emojiSize={emojiSize}
+            />
           ) : (
             <> {/* Bewerkingsmodus */}
               {activeSection === 'basisgegevens' && <BasicInfoForm formData={formData.basisgegevens} updateFormData={updateFormData} />}
