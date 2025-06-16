@@ -79,7 +79,15 @@ const BehandelaarInvoerDashboard = ({
       />
 
       <div className="container mx-auto p-4">
-        <SectionNavigation sections={sections} activeSection={activeSection} setActiveSection={setActiveSection} />
+        {!previewMode && (
+          <div className="no-print">
+            <SectionNavigation
+              sections={sections}
+              activeSection={activeSection}
+              setActiveSection={setActiveSection}
+            />
+          </div>
+        )}
 
         <div className="bg-white rounded-lg shadow p-6">
           {previewMode ? (
@@ -104,20 +112,24 @@ const BehandelaarInvoerDashboard = ({
             </>
           )}
 
-          <div className="flex justify-between mt-6 pt-4 border-t">
-            <button
-              className="px-4 py-2 bg-gray-200 rounded-md flex items-center disabled:opacity-50"
-              onClick={prevSection} disabled={activeSection === sections[0].id}
-            >
-              <ChevronLeft className="mr-2" size={18} /> Vorige
-            </button>
-            <button
-              className="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center disabled:opacity-50"
-              onClick={nextSection} disabled={activeSection === sections[sections.length - 1].id}
-            >
-              Volgende <ChevronRight className="ml-2" size={18} />
-            </button>
-          </div>
+          {!previewMode && (
+            <div className="flex justify-between mt-6 pt-4 border-t no-print">
+              <button
+                className="px-4 py-2 bg-gray-200 rounded-md flex items-center disabled:opacity-50"
+                onClick={prevSection}
+                disabled={activeSection === sections[0].id}
+              >
+                <ChevronLeft className="mr-2" size={18} /> Vorige
+              </button>
+              <button
+                className="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center disabled:opacity-50"
+                onClick={nextSection}
+                disabled={activeSection === sections[sections.length - 1].id}
+              >
+                Volgende <ChevronRight className="ml-2" size={18} />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
