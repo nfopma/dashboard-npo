@@ -4,14 +4,15 @@ const { Pool } = require('pg');
 // gebruikt hij die connectie-string. Anders valt hij terug op de losse variabelen
 // (DB_HOST, DB_USER, etc.) die we lokaal via docker-compose en .env instellen.
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  // Gebruik nu de losse omgevingsvariabelen voor de verbinding
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
   // Supabase vereist altijd SSL. rejectUnauthorized: false is nodig voor sommige omgevingen.
-  // Soms kan een specifieke SSL-configuratie helpen bij netwerkproblemen.
   ssl: {
     rejectUnauthorized: false, 
-    // Optioneel: Als de bovenstaande niet werkt, probeer dan 'require' of 'prefer'
-    // Dit kan helpen bij bepaalde netwerkconfiguraties.
-    // sslmode: 'require', 
   },
 });
 
