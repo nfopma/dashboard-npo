@@ -1,4 +1,8 @@
 const { Pool } = require('pg');
+const dns = require('dns');
+
+// Forceer IPv4 voor alle DNS lookups
+dns.setDefaultResultOrder('ipv4first');
 
 // De Pool constructor is slim. Als process.env.DATABASE_URL bestaat (zoals op Render),
 // gebruikt hij die connectie-string. Anders valt hij terug op de losse variabelen
@@ -14,6 +18,8 @@ const pool = new Pool({
   ssl: {
     rejectUnauthorized: false, 
   },
+  // Forceer IPv4 voor Docker compatibiliteit
+  connectionString: process.env.DATABASE_URL || undefined,
 });
 
 // Deze functie is nu minder relevant omdat het schema beheerd wordt in Supabase,
