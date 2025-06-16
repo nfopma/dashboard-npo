@@ -1,18 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Save, Eye, Edit, ArrowLeftCircle, Printer } from 'lucide-react';
 import EmojiSizeControl from './EmojiSizeControl';
 
-const DashboardHeader = ({ 
-  previewMode, 
-  setPreviewMode, 
-  emojiSize, 
+const DashboardHeader = ({
+  previewMode,
+  setPreviewMode,
+  emojiSize,
   setEmojiSize,
   showPatientName, // Nieuwe prop
   onCloseDashboard // Nieuwe prop
 }) => {
+  const [showSaveMessage, setShowSaveMessage] = useState(false);
+
+  const handleSave = () => {
+    setShowSaveMessage(true);
+    setTimeout(() => setShowSaveMessage(false), 2000);
+  };
+
   return (
     <header className="bg-blue-700 text-white p-4 no-print">
-      <div className="container mx-auto flex justify-between items-center">
+      <div className="container mx-auto flex flex-col sm:flex-row flex-wrap justify-between items-start sm:items-center space-y-2 sm:space-y-0">
         <div className="flex items-center">
           {onCloseDashboard && (
             <button 
@@ -28,7 +35,7 @@ const DashboardHeader = ({
             {showPatientName && <p className="text-sm text-blue-200">{showPatientName}</p>}
           </div>
         </div>
-        <div className="flex space-x-4 items-center">
+        <div className="flex flex-wrap items-center gap-2 sm:space-x-4">
           <EmojiSizeControl emojiSize={emojiSize} setEmojiSize={setEmojiSize} />
           <button
             className={`px-4 py-2 rounded-md flex items-center ${
@@ -48,10 +55,16 @@ const DashboardHeader = ({
               </>
             )}
           </button>
-          <button className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-md flex items-center">
+          <button
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-md flex items-center"
+            onClick={handleSave}
+          >
             <Save className="mr-2" size={18} />
             Opslaan
           </button>
+          {showSaveMessage && (
+            <span className="text-green-300 text-sm">Opgeslagen!</span>
+          )}
           {previewMode && (
             <button
               className="px-4 py-2 bg-purple-500 hover:bg-purple-600 rounded-md flex items-center"
