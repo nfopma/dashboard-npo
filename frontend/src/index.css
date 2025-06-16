@@ -24,8 +24,13 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 /* Verberg de pijltjes bij number inputs in Firefox */
+
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.print-section-title {
+  display: none;
 }
 
 @media print {
@@ -37,5 +42,23 @@ input[type=number] {
   }
   .page-break {
     page-break-after: always;
+  }
+
+  .print-section-title {
+    @apply text-2xl font-bold mb-4;
+    display: block;
+  }
+
+  /* Gebruik volledige breedte en behoud kleuren */
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 }

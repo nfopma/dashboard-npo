@@ -11,7 +11,7 @@ const DashboardHeader = ({
   onCloseDashboard // Nieuwe prop
 }) => {
   return (
-    <header className="bg-blue-700 text-white p-4">
+    <header className="bg-blue-700 text-white p-4 no-print">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center">
           {onCloseDashboard && (

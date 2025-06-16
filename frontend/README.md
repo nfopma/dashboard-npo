@@ -41,7 +41,7 @@ You don't have to ever use `eject`. The curated feature set is suitable for smal
 
 ## PDF Export
 
-When viewing the visualization preview there is a **Download PDF** button in the header. Clicking it opens the browser's print dialog where each preview tab is rendered on a separate A4 page.
+When viewing the visualization preview there is a **Download PDF** button in the header. Clicking it opens the browser's print dialog where each preview tab is rendered on its own A4 page. The dashboard header is automatically hidden and each page begins with the appropriate section title.
 
 ## Learn More
 
