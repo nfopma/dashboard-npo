@@ -48,45 +48,52 @@ const handleResponse = async (response) => {
   throw new Error(errorData.error || 'Er is een onbekende fout opgetreden.');
 };
 
+// Helper functie om headers met authenticatie toe te voegen
+const getAuthHeaders = (token) => {
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  };
+};
 
-export const getPatients = async () => {
+
+export const getPatients = async (token) => {
   console.log("API: Ophalen van alle patiënten via backend...");
-  const response = await fetch(`${API_URL}/patients`);
+  const response = await fetch(`${API_URL}/patients`, {
+    headers: getAuthHeaders(token),
+  });
   return handleResponse(response);
 };
 
-export const addPatient = async (name = 'Nieuwe Patiënt') => {
+export const addPatient = async (token, name = 'Nieuwe Patiënt') => {
   console.log(`API: Toevoegen van nieuwe patiënt met naam "${name}" via backend...`);
   const newPatientTemplate = createNewPatientTemplate(name);
   
   const response = await fetch(`${API_URL}/patients`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: getAuthHeaders(token),
     body: JSON.stringify(newPatientTemplate),
   });
 
   return handleResponse(response);
 };
 
-export const updatePatient = async (patientId, updatedPatientData) => {
+export const updatePatient = async (token, patientId, updatedPatientData) => {
   console.log(`API: Bijwerken van patiënt ${patientId} via backend...`);
   const response = await fetch(`${API_URL}/patients/${patientId}`, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: getAuthHeaders(token),
     body: JSON.stringify(updatedPatientData),
   });
 
   return handleResponse(response);
 };
 
-export const deletePatient = async (patientId) => {
+export const deletePatient = async (token, patientId) => {
   console.log(`API: Verwijderen van patiënt ${patientId} via backend...`);
   const response = await fetch(`${API_URL}/patients/${patientId}`, {
     method: 'DELETE',
+    headers: getAuthHeaders(token),
   });
 
   return handleResponse(response);

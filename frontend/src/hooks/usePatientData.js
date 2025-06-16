@@ -21,6 +21,7 @@ const usePatientData = () => {
       try {
         setIsLoading(true);
         const token = session.access_token;
+        // Geef het token door aan de API-aanroep
         const initialPatients = await api.getPatients(token);
         setPatients(initialPatients);
         setError(null);
@@ -48,6 +49,7 @@ const usePatientData = () => {
     if (!session) return;
     try {
       const token = session.access_token;
+      // Geef het token door aan de API-aanroep
       const newPatient = await api.addPatient(token);
       setPatients(prev => [...prev, newPatient]);
       setSelectedPatientId(newPatient.id);
@@ -69,6 +71,7 @@ const usePatientData = () => {
         setSelectedPatientId(null);
       }
       
+      // Geef het token door aan de API-aanroep
       await api.deletePatient(token, patientId);
 
     } catch (err) {
@@ -85,6 +88,7 @@ const usePatientData = () => {
       setPatients(prev =>
         prev.map(p => (p.id === patientId ? updatedPatient : p))
       );
+      // Geef het token door aan de API-aanroep
       await api.updatePatient(token, patientId, updatedPatient);
     } catch (err) {
       setError("Kon de wijziging niet opslaan.");
