@@ -1,13 +1,14 @@
 import React from 'react';
-import { UserPlus, Users, TestTube2 } from 'lucide-react'; // Importeer UserPlus en TestTube2 opnieuw
+import { UserPlus, Users } from 'lucide-react'; // Verwijder TestTube2 import
 import { useAuth } from '../contexts/AuthContext'; // Importeer useAuth
 
 const PatientOverview = ({ patients, onSelectPatient, onAddPatient }) => {
   const { signOut } = useAuth(); // Gebruik de signOut functie van de AuthContext
 
-  // Filter de 'test-patient' uit de lijst voor weergave
-  const testPatient = patients.find(p => p.id === 'test-patient');
-  const otherPatients = patients.filter(p => p.id !== 'test-patient');
+  // Verwijder filtering van 'test-patient'
+  // const testPatient = patients.find(p => p.id === 'test-patient');
+  // const otherPatients = patients.filter(p => p.id !== 'test-patient');
+  const allPatients = patients; // Gebruik alle patiënten direct
 
   const handleLogout = async () => {
     const { error } = await signOut();
@@ -49,7 +50,8 @@ const PatientOverview = ({ patients, onSelectPatient, onAddPatient }) => {
           </button>
         </div>
 
-        {testPatient && (
+        {/* Verwijder de testpatiënt weergave */}
+        {/* {testPatient && (
           <div className="mb-8">
             <h2 className="text-xl font-semibold mb-3 text-blue-600 flex items-center">
               <TestTube2 className="mr-2" size={24} /> Testpatiënt
@@ -63,13 +65,13 @@ const PatientOverview = ({ patients, onSelectPatient, onAddPatient }) => {
               <p className="text-sm text-gray-600">Klik om de testgegevens te bekijken en te bewerken.</p>
             </div>
           </div>
-        )}
+        )} */}
 
         <div>
           <h2 className="text-xl font-semibold mb-3 text-gray-700">Mijn Patiënten</h2>
-          {otherPatients.length > 0 ? (
+          {allPatients.length > 0 ? ( // Gebruik allPatients
             <ul className="space-y-3">
-              {otherPatients.map(patient => (
+              {allPatients.map(patient => ( // Gebruik allPatients
                 <li
                   key={patient.id}
                   className="p-4 border rounded-lg hover:bg-gray-100 cursor-pointer transition-colors"
