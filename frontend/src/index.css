@@ -48,14 +48,13 @@ input[type=number] {
   .tab-content {
     display: block !important;
   }
-  .page-break {
+  .print-page {
+    width: 100%;
     page-break-after: always;
   }
 
-  .print-page {
-    @apply flex flex-col items-center justify-center;
-    min-height: 100vh;
-    width: 100%;
+  .print-page:last-child {
+    page-break-after: auto;
   }
 
   .print-section-title {
