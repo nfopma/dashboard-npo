@@ -1,5 +1,5 @@
 import React from 'react';
-import { Save, Eye, Edit, ArrowLeftCircle } from 'lucide-react'; // ArrowLeftCircle toegevoegd
+import { Save, Eye, Edit, ArrowLeftCircle, Printer } from 'lucide-react';
 import EmojiSizeControl from './EmojiSizeControl';
 
 const DashboardHeader = ({ 
@@ -52,6 +52,15 @@ const DashboardHeader = ({
             <Save className="mr-2" size={18} />
             Opslaan
           </button>
+          {previewMode && (
+            <button
+              className="px-4 py-2 bg-purple-500 hover:bg-purple-600 rounded-md flex items-center"
+              onClick={() => window.print()}
+            >
+              <Printer className="mr-2" size={18} />
+              Download PDF
+            </button>
+          )}
         </div>
       </div>
     </header>
