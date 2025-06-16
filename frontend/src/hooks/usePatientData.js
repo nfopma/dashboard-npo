@@ -66,63 +66,50 @@ const usePatientData = () => {
     if (!patientId || !session || !user) return; // Zorg ervoor dat user ook beschikbaar is
     try {
       const token = session.access_token;
-      // Verwijder de check voor algemene testpatiënt
-      // const patientToDelete = patients.find(p => p.id === patientId);
-      // if (patientToDelete && patientToDelete.userId === null) {
-      //   setError("De algemene testpatiënt kan niet worden verwijderd.");
-      //   return;
-      // }
-
-      const originalPatients = [...patients];
-      const patientsAfterDelete = patients.filter(p => p.id !== patientId);
-      setPatients(patientsAfterDelete);
-      if (selectedPatientId === patientId) {
-        setSelectedPatientId(null);
-      }
       
-      // Geef het token door aan de API-aanroep
+      // Voer de API-aanroep eerst uit
       await api.deletePatient(token, patientId);
+
+      // Werk de lokale state alleen bij na een succesvolle API-aanroep
+      setPatients(prev => {
+        const patientsAfterDelete = prev.filter(p => p.id !== patientId);
+        if (selectedPatientId === patientId) {
+          setSelectedPatientId(null);
+        }
+        return patientsAfterDelete;
+      });
 
     } catch (err) {
       setError("Kon patiënt niet verwijderen.");
       console.error(err);
-      // Rollback kan hier geïmplementeerd worden
-      setPatients(originalPatients); // Rollback bij fout
+      // Geen rollback van de lokale state hier, omdat de API-aanroep al is mislukt.
+      // De UI zal de patiënt nog steeds tonen als de API-aanroep faalt.
     }
-  }, [patients, selectedPatientId, session, user]); // user toevoegen aan dependency array
+  }, [selectedPatientId, session, user]); // patients verwijderd uit dependency array
   
   const handleUpdate = useCallback(async (patientId, updatedPatient) => {
     if (!session || !user) return; // Zorg ervoor dat user ook beschikbaar is
     try {
       const token = session.access_token;
-      // Verwijder de check voor algemene testpatiënt
-      // const patientToUpdate = patients.find(p => p.id === patientId);
-      // if (patientToUpdate && patientToUpdate.userId === null) {
-      //   setError("De algemene testpatiënt kan niet worden gewijzigd.");
-      //   return;
-      // }
-
+      
+      // Werk de lokale state bij voordat de API-aanroep wordt gedaan voor een snellere UI-respons
       setPatients(prev =>
         prev.map(p => (p.id === patientId ? updatedPatient : p))
       );
+
       // Geef het token door aan de API-aanroep
       await api.updatePatient(token, patientId, updatedPatient);
     } catch (err) {
       setError("Kon de wijziging niet opslaan.");
       console.error(err);
-      // Rollback kan hier geïmplementeerd worden
-      // Optioneel: opnieuw laden van data om de state te synchroniseren met de backend
+      // Rollback kan hier geïmplementeerd worden als de API-aanroep faalt.
+      // Bijvoorbeeld: opnieuw laden van data om de state te synchroniseren met de backend
       // loadData(); 
     }
-  }, [session, user, patients]); // user en patients toevoegen aan dependency array
+  }, [session, user]); // patients verwijderd uit dependency array
 
   const updateFormData = useCallback((section, field, value) => {
     if (!selectedPatient) return;
-    // Verwijder de check voor algemene testpatiënt
-    // if (selectedPatient.userId === null) {
-    //   setError("De algemene testpatiënt kan niet worden gewijzigd.");
-    //   return;
-    // }
     const updatedPatient = JSON.parse(JSON.stringify(selectedPatient));
     updatedPatient.data[section][field] = value;
     
@@ -134,11 +121,6 @@ const usePatientData = () => {
 
   const updateScore = useCallback((category, field, value) => {
     if (!selectedPatient) return;
-    // Verwijder de check voor algemene testpatiënt
-    // if (selectedPatient.userId === null) {
-    //   setError("De algemene testpatiënt kan niet worden gewijzigd.");
-    //   return;
-    // }
     const updatedPatient = JSON.parse(JSON.stringify(selectedPatient));
     updatedPatient.data.intelligentie[category][field] = value;
     handleUpdate(selectedPatient.id, updatedPatient);
@@ -146,11 +128,6 @@ const usePatientData = () => {
 
   const updateList = useCallback((listName, newList) => {
     if (!selectedPatient) return;
-    // Verwijder de check voor algemene testpatiënt
-    // if (selectedPatient.userId === null) {
-    //   setError("De algemene testpatiënt kan niet worden gewijzigd.");
-    //   return;
-    // }
     const updatedPatient = { ...selectedPatient, [listName]: newList };
     handleUpdate(selectedPatient.id, updatedPatient);
   }, [selectedPatient, handleUpdate]);
@@ -160,24 +137,18 @@ const usePatientData = () => {
 
   const addKlacht = useCallback(() => {
     if (!selectedPatient) return;
-    // Verwijder de check voor algemene testpatiënt
-    // if (selectedPatient.userId === null) { setError("De algemene testpatiënt kan niet worden gewijzigd."); return; }
     const newList = [...selectedPatient.klachten, { tekst: '', emoji: '⚠️' }];
     updateList('klachten', newList);
   }, [selectedPatient, updateList]);
 
   const removeKlacht = useCallback((index) => {
     if (!selectedPatient) return;
-    // Verwijder de check voor algemene testpatiënt
-    // if (selectedPatient.userId === null) { setError("De algemene testpatiënt kan niet worden gewijzigd."); return; }
     const newList = selectedPatient.klachten.filter((_, i) => i !== index);
     updateList('klachten', newList);
   }, [selectedPatient, updateList]);
 
   const updateKlacht = useCallback((index, field, value) => {
     if (!selectedPatient) return;
-    // Verwijder de check voor algemene testpatiënt
-    // if (selectedPatient.userId === null) { setError("De algemene testpatiënt kan niet worden gewijzigd."); return; }
     const newList = selectedPatient.klachten.map((item, i) =>
       i === index ? { ...item, [field]: value } : item
     );
@@ -186,24 +157,18 @@ const usePatientData = () => {
 
   const addBevinding = useCallback(() => {
     if (!selectedPatient) return;
-    // Verwijder de check voor algemene testpatiënt
-    // if (selectedPatient.userId === null) { setError("De algemene testpatiënt kan niet worden gewijzigd."); return; }
     const newList = [...selectedPatient.belangrijksteBevindingen, { tekst: '', emoji: '🔍' }];
     updateList('belangrijksteBevindingen', newList);
   }, [selectedPatient, updateList]);
 
   const removeBevinding = useCallback((index) => {
     if (!selectedPatient) return;
-    // Verwijder de check voor algemene testpatiënt
-    // if (selectedPatient.userId === null) { setError("De algemene testpatiënt kan niet worden gewijzigd."); return; }
     const newList = selectedPatient.belangrijksteBevindingen.filter((_, i) => i !== index);
     updateList('belangrijksteBevindingen', newList);
   }, [selectedPatient, updateList]);
 
   const updateBevinding = useCallback((index, field, value) => {
     if (!selectedPatient) return;
-    // Verwijder de check voor algemene testpatiënt
-    // if (selectedPatient.userId === null) { setError("De algemene testpatiënt kan niet worden gewijzigd."); return; }
     const newList = selectedPatient.belangrijksteBevindingen.map((item, i) =>
       i === index ? { ...item, [field]: value } : item
     );
@@ -212,24 +177,18 @@ const usePatientData = () => {
 
   const addAdvies = useCallback(() => {
     if (!selectedPatient) return;
-    // Verwijder de check voor algemene testpatiënt
-    // if (selectedPatient.userId === null) { setError("De algemene testpatiënt kan niet worden gewijzigd."); return; }
     const newList = [...selectedPatient.praktischeAdviezen, { tekst: '', emoji: '💡' }];
     updateList('praktischeAdviezen', newList);
   }, [selectedPatient, updateList]);
 
   const removeAdvies = useCallback((index) => {
     if (!selectedPatient) return;
-    // Verwijder de check voor algemene testpatiënt
-    // if (selectedPatient.userId === null) { setError("De algemene testpatiënt kan niet worden gewijzigd."); return; }
     const newList = selectedPatient.praktischeAdviezen.filter((_, i) => i !== index);
     updateList('praktischeAdviezen', newList);
   }, [selectedPatient, updateList]);
 
   const updateAdvies = useCallback((index, field, value) => {
     if (!selectedPatient) return;
-    // Verwijder de check voor algemene testpatiënt
-    // if (selectedPatient.userId === null) { setError("De algemene testpatiënt kan niet worden gewijzigd."); return; }
     const newList = selectedPatient.praktischeAdviezen.map((item, i) =>
       i === index ? { ...item, [field]: value } : item
     );
