@@ -1,8 +1,8 @@
 import React from 'react';
-import { UserPlus, Users } from 'lucide-react'; // Verwijder TestTube2 import
+import { UserPlus, Users, Trash2 } from 'lucide-react'; // Voeg Trash2 toe voor verwijderen
 import { useAuth } from '../contexts/AuthContext'; // Importeer useAuth
 
-const PatientOverview = ({ patients, onSelectPatient, onAddPatient }) => {
+const PatientOverview = ({ patients, onSelectPatient, onAddPatient, onDeletePatient }) => {
   const { signOut } = useAuth(); // Gebruik de signOut functie van de AuthContext
 
   // Verwijder filtering van 'test-patient'
@@ -19,6 +19,13 @@ const PatientOverview = ({ patients, onSelectPatient, onAddPatient }) => {
       console.log("Succesvol uitgelogd.");
       // Optioneel: Navigeer de gebruiker naar de loginpagina of refresh de pagina
       // window.location.reload(); // Dit kan handig zijn om de state volledig te resetten
+    }
+  };
+
+  const handleDelete = (e, patientId) => {
+    e.stopPropagation();
+    if (window.confirm('Weet je zeker dat je deze patiënt wilt verwijderen?')) {
+      onDeletePatient(patientId);
     }
   };
 
@@ -71,14 +78,22 @@ const PatientOverview = ({ patients, onSelectPatient, onAddPatient }) => {
           <h2 className="text-xl font-semibold mb-3 text-gray-700">Mijn Patiënten</h2>
           {allPatients.length > 0 ? ( // Gebruik allPatients
             <ul className="space-y-3">
-              {allPatients.map(patient => ( // Gebruik allPatients
+              {allPatients.map(patient => (
                 <li
                   key={patient.id}
-                  className="p-4 border rounded-lg hover:bg-gray-100 cursor-pointer transition-colors"
+                  className="p-4 border rounded-lg hover:bg-gray-100 cursor-pointer transition-colors flex justify-between items-center"
                   onClick={() => onSelectPatient(patient.id)}
                 >
-                  <h3 className="font-medium text-gray-800">{patient.name || 'Naamloos'}</h3>
-                  <p className="text-sm text-gray-500">Geboortedatum: {patient.data.basisgegevens.geboortedatum || 'N.v.t.'}</p>
+                  <div>
+                    <h3 className="font-medium text-gray-800">{patient.name || 'Naamloos'}</h3>
+                    <p className="text-sm text-gray-500">Geboortedatum: {patient.data.basisgegevens.geboortedatum || 'N.v.t.'}</p>
+                  </div>
+                  <button
+                    className="text-red-500 hover:text-red-700"
+                    onClick={(e) => handleDelete(e, patient.id)}
+                  >
+                    <Trash2 size={18} />
+                  </button>
                 </li>
               ))}
             </ul>
