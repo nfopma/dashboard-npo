@@ -38,6 +38,10 @@ input[type=number] {
 }
 
 @media print {
+  @page {
+    margin: 0;
+  }
+
   .no-print {
     display: none !important;
   }
@@ -49,7 +53,9 @@ input[type=number] {
   }
 
   .print-page {
-    @apply flex flex-col items-center justify-center h-screen;
+    @apply flex flex-col items-center justify-center;
+    min-height: 100vh;
+    width: 100%;
   }
 
   .print-section-title {
