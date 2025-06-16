@@ -43,13 +43,19 @@ const PreviewTabs = ({ formData, klachten, belangrijksteBevindingen, praktischeA
         ))}
       </div>
 
-      <div className={`tab-content ${activeTab === 'voorblad' ? '' : 'hidden'} page-break`}>
+      <div className={`tab-content print-page ${activeTab === 'voorblad' ? '' : 'hidden'} page-break`}>
+        <h1 className="print-main-title">Neuropsychologisch Onderzoek</h1>
+        <h2 className="print-section-title">Voorblad</h2>
         <PatientInfoCard formData={formData} klachten={klachten} emojiSize={emojiSize} />
       </div>
-      <div className={`tab-content ${activeTab === 'onderzoeksresultaten' ? '' : 'hidden'} page-break`}>
+      <div className={`tab-content print-page ${activeTab === 'onderzoeksresultaten' ? '' : 'hidden'} page-break`}>
+        <h1 className="print-main-title">Neuropsychologisch Onderzoek</h1>
+        <h2 className="print-section-title">Onderzoeksresultaten</h2>
         <IntelligenceResultsCard formData={formData} emojiSize={emojiSize} />
       </div>
-      <div className={`tab-content ${activeTab === 'conclusie' ? '' : 'hidden'}`}>
+      <div className={`tab-content print-page ${activeTab === 'conclusie' ? '' : 'hidden'}`}>
+        <h1 className="print-main-title">Neuropsychologisch Onderzoek</h1>
+        <h2 className="print-section-title">Conclusie &amp; Behandeling</h2>
         <ConclusieCard
           formData={formData}
           belangrijksteBevindingen={belangrijksteBevindingen}
