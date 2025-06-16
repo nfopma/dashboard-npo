@@ -6,8 +6,12 @@ const { Pool } = require('pg');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   // Supabase vereist altijd SSL. rejectUnauthorized: false is nodig voor sommige omgevingen.
+  // Soms kan een specifieke SSL-configuratie helpen bij netwerkproblemen.
   ssl: {
     rejectUnauthorized: false, 
+    // Optioneel: Als de bovenstaande niet werkt, probeer dan 'require' of 'prefer'
+    // Dit kan helpen bij bepaalde netwerkconfiguraties.
+    // sslmode: 'require', 
   },
 });
 
