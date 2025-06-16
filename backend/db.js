@@ -20,6 +20,8 @@ const pool = new Pool({
   },
   // Forceer IPv4 voor Docker compatibiliteit
   connectionString: process.env.DATABASE_URL || undefined,
+  // Voeg family: 4 toe om expliciet IPv4 te forceren voor de verbinding
+  family: 4,
 });
 
 // Deze functie is nu minder relevant omdat het schema beheerd wordt in Supabase,
