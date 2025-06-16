@@ -31,13 +31,21 @@ const DashboardHeader = ({
         <div className="flex space-x-4 items-center">
           <EmojiSizeControl emojiSize={emojiSize} setEmojiSize={setEmojiSize} />
           <button
-            className={`px-4 py-2 rounded-md flex items-center ${previewMode ? 'bg-blue-500 hover:bg-blue-600' : 'bg-green-500 hover:bg-green-600'}`}
+            className={`px-4 py-2 rounded-md flex items-center ${
+              previewMode
+                ? 'bg-orange-500 hover:bg-orange-600'
+                : 'bg-green-500 hover:bg-green-600'
+            }`}
             onClick={() => setPreviewMode(!previewMode)}
           >
             {previewMode ? (
-              <><Edit className="mr-2" size={18} />Bewerken</>
+              <>
+                <Edit className="mr-2" size={18} />Bewerken
+              </>
             ) : (
-              <><Eye className="mr-2" size={18} />Preview</>
+              <>
+                <Eye className="mr-2" size={18} />Visualisatie
+              </>
             )}
           </button>
           <button className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-md flex items-center">

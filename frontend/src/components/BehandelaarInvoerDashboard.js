@@ -8,9 +8,7 @@ import BeinvloedendeFactorenForm from './BeinvloedendeFactorenForm';
 import IntelligentieForm from './IntelligentieForm'; // <-- Nieuw, schoon formulier
 import ConclusieForm from './ConclusieForm';
 import BehandelingForm from './BehandelingForm';
-import PatientInfoCard from './preview/PatientInfoCard';
-import IntelligenceResultsCard from './preview/IntelligenceResultsCard';
-import ConclusieCard from './preview/ConclusieCard';
+import PreviewTabs from './preview/PreviewTabs';
 
 // Behandelaar invoerscherm voor Neuropsychologisch Dashboard
 const BehandelaarInvoerDashboard = ({
@@ -31,7 +29,8 @@ const BehandelaarInvoerDashboard = ({
   // State voor actieve sectie en preview modus, emojiSize lokaal voor dit dashboard
   const [activeSection, setActiveSection] = useState('basisgegevens');
   const [previewMode, setPreviewMode] = useState(false);
-  const [emojiSize, setEmojiSize] = useState(2); // 1=klein, 2=medium, 3=groot, 4=extra groot
+  // Emoji grootte: 1=XS, 2=S, 3=M, 4=L, 5=XL
+  const [emojiSize, setEmojiSize] = useState(4);
 
   if (!patient) {
     return (
@@ -81,15 +80,25 @@ const BehandelaarInvoerDashboard = ({
       />
 
       <div className="container mx-auto p-4">
-        <SectionNavigation sections={sections} activeSection={activeSection} setActiveSection={setActiveSection} />
+        {!previewMode && (
+          <div className="no-print">
+            <SectionNavigation
+              sections={sections}
+              activeSection={activeSection}
+              setActiveSection={setActiveSection}
+            />
+          </div>
+        )}
 
         <div className="bg-white rounded-lg shadow p-6">
           {previewMode ? (
-            <div> {/* Preview Modus */}
-              <PatientInfoCard formData={formData} klachten={klachten} emojiSize={emojiSize} />
-              <IntelligenceResultsCard formData={formData} emojiSize={emojiSize} />
-              <ConclusieCard formData={formData} belangrijksteBevindingen={belangrijksteBevindingen} praktischeAdviezen={praktischeAdviezen} emojiSize={emojiSize} />
-            </div>
+            <PreviewTabs
+              formData={formData}
+              klachten={klachten}
+              belangrijksteBevindingen={belangrijksteBevindingen}
+              praktischeAdviezen={praktischeAdviezen}
+              emojiSize={emojiSize}
+            />
           ) : (
             <> {/* Bewerkingsmodus */}
               {activeSection === 'basisgegevens' && <BasicInfoForm formData={formData.basisgegevens} updateFormData={updateFormData} />}
@@ -104,20 +113,24 @@ const BehandelaarInvoerDashboard = ({
             </>
           )}
 
-          <div className="flex justify-between mt-6 pt-4 border-t">
-            <button
-              className="px-4 py-2 bg-gray-200 rounded-md flex items-center disabled:opacity-50"
-              onClick={prevSection} disabled={activeSection === sections[0].id}
-            >
-              <ChevronLeft className="mr-2" size={18} /> Vorige
-            </button>
-            <button
-              className="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center disabled:opacity-50"
-              onClick={nextSection} disabled={activeSection === sections[sections.length - 1].id}
-            >
-              Volgende <ChevronRight className="ml-2" size={18} />
-            </button>
-          </div>
+          {!previewMode && (
+            <div className="flex justify-between mt-6 pt-4 border-t no-print">
+              <button
+                className="px-4 py-2 bg-gray-200 rounded-md flex items-center disabled:opacity-50"
+                onClick={prevSection}
+                disabled={activeSection === sections[0].id}
+              >
+                <ChevronLeft className="mr-2" size={18} /> Vorige
+              </button>
+              <button
+                className="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center disabled:opacity-50"
+                onClick={nextSection}
+                disabled={activeSection === sections[sections.length - 1].id}
+              >
+                Volgende <ChevronRight className="ml-2" size={18} />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

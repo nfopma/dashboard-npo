@@ -5,7 +5,10 @@ const PatientInfoCard = ({ formData, klachten, emojiSize }) => {
   return (
     <div className="bg-gray-100 p-4 rounded-lg">
       <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-        <h3 className="font-bold mb-2">📝 Patiëntgegevens</h3>
+        <h3 className="font-bold mb-2 flex items-center">
+          <span className={`mr-2 ${getEmojiSizeClass(emojiSize, 'header')}`}>📝</span>
+          Patiëntgegevens
+        </h3>
         <p><span className="font-semibold">Naam:</span> {formData.basisgegevens.naam}</p>
         <p><span className="font-semibold">Geboortedatum:</span> {new Date(formData.basisgegevens.geboortedatum).toLocaleDateString('nl-NL')}</p>
       </div>
