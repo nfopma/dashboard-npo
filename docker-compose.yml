@@ -5,7 +5,9 @@ services:
       - "3000:3000"
     volumes:
       - ./frontend:/app
-      - /app/node_modules
+      # Verwijder de volgende regel om te voorkomen dat lokale node_modules
+      # de geïnstalleerde modules in de container overschrijven.
+      # - /app/node_modules 
     # Laad de omgevingsvariabelen uit het .env bestand
     # Dit is nodig voor de Supabase URL en Anon Key
     env_file:
