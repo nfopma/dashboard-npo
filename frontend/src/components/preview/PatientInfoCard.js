@@ -30,7 +30,7 @@ const PatientInfoCard = ({ formData, klachten, emojiSize }) => {
         </h3>
         <ul className="list-disc pl-5 space-y-1">
           {klachten.map((klacht, index) => (
-            <li key={index} className="flex items-center">
+            <li key={index} className="text-sm flex items-center">
               <span className={`mr-3 ${getEmojiSizeClass(emojiSize, 'normal')}`}>{klacht.emoji}</span>
               <span className="font-semibold mr-1">{getEmojiLabel('klachten', klacht.emoji)}</span>
               {klacht.tekst}
