@@ -3,7 +3,6 @@ const cors = require('cors');
 require('dotenv').config();
 const { v4: uuidv4 } = require('uuid');
 const { createClient } = require('@supabase/supabase-js');
-const db = require('./db');
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -49,15 +48,39 @@ const authMiddleware = async (req, res, next) => {
 app.use('/api/patients', authMiddleware);
 
 // GET /api/patients - Haal alle patiënten op VOOR DE INGEGLOGDE GEBRUIKER
+// Inclusief patiënten met user_id = NULL (algemene testpatiënten)
 app.get('/api/patients', async (req, res) => {
   try {
-    const { rows } = await db.query(
-      'SELECT * FROM patients WHERE user_id = $1 ORDER BY name ASC',
-      [req.user.id]
-    );
-    res.json(rows.map(db.dbToCamelCase));
+    // Haal patiënten op die gekoppeld zijn aan de user_id OF waar user_id NULL is
+    const { data: patients, error } = await supabase
+      .from('patients')
+      .select('*')
+      .or(`user_id.eq.${req.user.id},user_id.is.null`)
+      .order('name', { ascending: true });
+
+    if (error) {
+      console.error('Fout bij ophalen patiënten van Supabase:', error);
+      return res.status(500).json({ error: 'Interne serverfout bij ophalen patiënten.' });
+    }
+    
+    // Supabase retourneert al camelCase voor JSONB velden, en de rest is snake_case.
+    // We moeten de snake_case velden handmatig omzetten naar camelCase.
+    // De `dbToCamelCase` functie is verwijderd, dus we doen het hier direct.
+    const formattedPatients = patients.map(patient => ({
+      id: patient.id,
+      userId: patient.user_id,
+      name: patient.name,
+      data: patient.data,
+      klachten: patient.klachten,
+      belangrijksteBevindingen: patient.belangrijkste_bevindingen,
+      praktischeAdviezen: patient.praktische_adviezen,
+      createdAt: patient.created_at,
+      updatedAt: patient.updated_at,
+    }));
+
+    res.json(formattedPatients);
   } catch (err) {
-    console.error('Fout bij ophalen patiënten:', err);
+    console.error('Onverwachte fout bij ophalen patiënten:', err);
     res.status(500).json({ error: 'Interne serverfout' });
   }
 });
@@ -71,26 +94,50 @@ app.post('/api/patients', async (req, res) => {
     belangrijksteBevindingen = [],
     praktischeAdviezen = []
   } = req.body;
-  const newId = uuidv4();
+  
+  // Supabase genereert zelf de ID bij insert, dus uuidv4 is niet nodig voor de database ID.
+  // Echter, als je de ID al in de frontend genereert, kun je die meesturen.
+  // Voor nu laten we Supabase de ID genereren.
 
   try {
-    const { rows } = await db.query(
-      `INSERT INTO patients (id, user_id, name, data, klachten, belangrijkste_bevindingen, praktische_adviezen)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
-       RETURNING *`,
-      [
-        newId,
-        req.user.id, // Koppel de patiënt aan de ingelogde gebruiker
-        name,
-        JSON.stringify(data || {}),
-        JSON.stringify(klachten),
-        JSON.stringify(belangrijksteBevindingen),
-        JSON.stringify(praktischeAdviezen)
-      ]
-    );
-    res.status(201).json(db.dbToCamelCase(rows[0]));
+    const { data: newPatient, error } = await supabase
+      .from('patients')
+      .insert([
+        {
+          user_id: req.user.id, // Koppel de patiënt aan de ingelogde gebruiker
+          name: name,
+          data: data || {}, // Supabase kan direct JSON objecten opslaan in JSONB velden
+          klachten: klachten,
+          belangrijkste_bevindingen: belangrijksteBevindingen,
+          praktische_adviezen: praktischeAdviezen
+        }
+      ])
+      .select(); // Vraag de ingevoegde rij terug
+
+    if (error) {
+      console.error('Fout bij aanmaken patiënt in Supabase:', error);
+      return res.status(500).json({ error: 'Interne serverfout bij aanmaken patiënt.' });
+    }
+
+    // Supabase retourneert een array van objecten, we nemen de eerste
+    const createdPatient = newPatient[0];
+    
+    // Handmatig omzetten naar camelCase voor consistentie met frontend
+    const formattedCreatedPatient = {
+      id: createdPatient.id,
+      userId: createdPatient.user_id,
+      name: createdPatient.name,
+      data: createdPatient.data,
+      klachten: createdPatient.klachten,
+      belangrijksteBevindingen: createdPatient.belangrijkste_bevindingen,
+      praktischeAdviezen: createdPatient.praktische_adviezen,
+      createdAt: createdPatient.created_at,
+      updatedAt: createdPatient.updated_at,
+    };
+
+    res.status(201).json(formattedCreatedPatient);
   } catch (err) {
-    console.error('Fout bij aanmaken patiënt:', err);
+    console.error('Onverwachte fout bij aanmaken patiënt:', err);
     res.status(500).json({ error: 'Interne serverfout' });
   }
 });
@@ -107,29 +154,48 @@ app.put('/api/patients/:id', async (req, res) => {
   } = req.body;
 
   try {
-    // De WHERE clausule controleert nu op ZOWEL patient ID als user ID voor extra veiligheid.
-    const { rows } = await db.query(
-      `UPDATE patients
-       SET name = $1, data = $2, klachten = $3, belangrijkste_bevindingen = $4, praktische_adviezen = $5, updated_at = NOW()
-       WHERE id = $6 AND user_id = $7
-       RETURNING *`,
-      [
-        name,
-        JSON.stringify(data || {}),
-        JSON.stringify(klachten),
-        JSON.stringify(belangrijksteBevindingen),
-        JSON.stringify(praktischeAdviezen),
-        id,
-        req.user.id
-      ]
-    );
+    // Werk de patiënt bij, maar alleen als de user_id overeenkomt met de ingelogde gebruiker
+    // en de user_id NIET NULL is (voorkom wijziging van algemene testpatiënt)
+    const { data: updatedPatient, error } = await supabase
+      .from('patients')
+      .update({
+        name: name,
+        data: data || {},
+        klachten: klachten,
+        belangrijkste_bevindingen: belangrijksteBevindingen,
+        praktische_adviezen: praktischeAdviezen,
+        updated_at: new Date().toISOString() // Supabase kan dit ook automatisch doen met triggers
+      })
+      .eq('id', id)
+      .eq('user_id', req.user.id) // Alleen patiënten van de ingelogde gebruiker kunnen worden bijgewerkt
+      .not('user_id', 'is', null) // Voorkom wijziging van algemene testpatiënt
+      .select(); // Vraag de bijgewerkte rij terug
 
-    if (rows.length === 0) {
-      return res.status(404).json({ error: 'Patiënt niet gevonden of geen toestemming.' });
+    if (error) {
+      console.error('Fout bij bijwerken patiënt in Supabase:', error);
+      return res.status(500).json({ error: 'Interne serverfout bij bijwerken patiënt.' });
     }
-    res.json(db.dbToCamelCase(rows[0]));
+
+    if (!updatedPatient || updatedPatient.length === 0) {
+      return res.status(404).json({ error: 'Patiënt niet gevonden of geen toestemming om te wijzigen.' });
+    }
+    
+    // Handmatig omzetten naar camelCase voor consistentie met frontend
+    const formattedUpdatedPatient = {
+      id: updatedPatient[0].id,
+      userId: updatedPatient[0].user_id,
+      name: updatedPatient[0].name,
+      data: updatedPatient[0].data,
+      klachten: updatedPatient[0].klachten,
+      belangrijksteBevindingen: updatedPatient[0].belangrijkste_bevindingen,
+      praktischeAdviezen: updatedPatient[0].praktische_adviezen,
+      createdAt: updatedPatient[0].created_at,
+      updatedAt: updatedPatient[0].updated_at,
+    };
+
+    res.json(formattedUpdatedPatient);
   } catch (err) {
-    console.error(`Fout bij bijwerken patiënt ${id}:`, err);
+    console.error(`Onverwachte fout bij bijwerken patiënt ${id}:`, err);
     res.status(500).json({ error: 'Interne serverfout' });
   }
 });
@@ -138,14 +204,26 @@ app.put('/api/patients/:id', async (req, res) => {
 app.delete('/api/patients/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    // De WHERE clausule controleert nu op ZOWEL patient ID als user ID.
-    const result = await db.query('DELETE FROM patients WHERE id = $1 AND user_id = $2', [id, req.user.id]);
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Patiënt niet gevonden of geen toestemming.' });
+    // Verwijder de patiënt, maar alleen als de user_id overeenkomt met de ingelogde gebruiker
+    // en de user_id NIET NULL is (voorkom verwijdering van algemene testpatiënt)
+    const { error, count } = await supabase
+      .from('patients')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', req.user.id) // Alleen patiënten van de ingelogde gebruiker kunnen worden verwijderd
+      .not('user_id', 'is', null); // Voorkom verwijdering van algemene testpatiënt
+
+    if (error) {
+      console.error('Fout bij verwijderen patiënt in Supabase:', error);
+      return res.status(500).json({ error: 'Interne serverfout bij verwijderen patiënt.' });
+    }
+
+    if (count === 0) {
+      return res.status(404).json({ error: 'Patiënt niet gevonden of geen toestemming om te verwijderen.' });
     }
     res.status(204).send(); // No Content
   } catch (err) {
-    console.error(`Fout bij verwijderen patiënt ${id}:`, err);
+    console.error(`Onverwachte fout bij verwijderen patiënt ${id}:`, err);
     res.status(500).json({ error: 'Interne serverfout' });
   }
 });
@@ -153,8 +231,7 @@ app.delete('/api/patients/:id', async (req, res) => {
 
 // Start de server
 const startServer = async () => {
-  // De initDb functie is nu alleen een verbindingstest.
-  await db.initDb(); 
+  // Geen database initialisatie meer nodig via pg, Supabase client is direct klaar.
   app.listen(port, () => {
     console.log(`Backend server draait op http://localhost:${port}`);
   });
