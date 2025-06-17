@@ -9,8 +9,10 @@ export default function printSection(elementId) {
   printWindow.document.write(`
     <html>
       <head>
-        <title>Print</title>
         ${styles}
+        <style>
+          @page { margin: 1cm; }
+        </style>
       </head>
       <body>${element.outerHTML}</body>
     </html>
