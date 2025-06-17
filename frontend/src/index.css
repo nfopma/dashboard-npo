@@ -39,7 +39,8 @@ input[type=number] {
 
 @media print {
   @page {
-    margin: 0;
+    size: A4;
+    margin: 1cm;
   }
 
   .no-print {
@@ -50,12 +51,15 @@ input[type=number] {
   }
   .page-break {
     page-break-after: always;
+    break-after: page;
   }
 
   .print-page {
     @apply flex flex-col items-center justify-center;
-    min-height: 100vh;
     width: 100%;
+    box-sizing: border-box;
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
 
   .print-section-title {
@@ -79,5 +83,12 @@ input[type=number] {
     width: 100% !important;
     padding: 0 !important;
     margin: 0 !important;
+  }
+
+  /* Verwijder vaste schermhoogtes bij afdrukken */
+  .h-screen,
+  .min-h-screen {
+    height: auto !important;
+    min-height: auto !important;
   }
 }
