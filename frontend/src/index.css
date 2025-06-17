@@ -40,7 +40,7 @@ input[type=number] {
 @media print {
   @page {
     size: A4;
-    margin: 0;
+    margin: 2cm;
   }
 
   .no-print {
