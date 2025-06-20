@@ -31,7 +31,7 @@ const PatientOverview = ({ patients, onSelectPatient, onAddPatient, onDeletePati
 
   return (
     <div className="container mx-auto p-4">
-      <header className="bg-blue-700 text-white p-4 rounded-t-lg">
+      <header className="bg-arkin-primary text-white p-4 rounded-t-lg">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-bold flex items-center">
             <Users className="mr-3" size={28}/> Patiëntenoverzicht
@@ -60,15 +60,15 @@ const PatientOverview = ({ patients, onSelectPatient, onAddPatient, onDeletePati
         {/* Verwijder de testpatiënt weergave */}
         {/* {testPatient && (
           <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-3 text-blue-600 flex items-center">
+            <h2 className="text-xl font-semibold mb-3 text-arkin-secondary flex items-center">
               <TestTube2 className="mr-2" size={24} /> Testpatiënt
             </h2>
             <div
               key={testPatient.id}
-              className="p-4 border rounded-lg hover:bg-gray-100 cursor-pointer transition-colors bg-blue-50 border-blue-200"
+              className="p-4 border rounded-lg hover:bg-gray-100 cursor-pointer transition-colors bg-arkin-secondary/20 border-arkin-secondary"
               onClick={() => onSelectPatient(testPatient.id)}
             >
-              <h3 className="font-medium text-blue-700">{testPatient.name}</h3>
+              <h3 className="font-medium text-arkin-primary">{testPatient.name}</h3>
               <p className="text-sm text-gray-600">Klik om de testgegevens te bekijken en te bewerken.</p>
             </div>
           </div>

@@ -5,8 +5,8 @@ import ConclusieCard from './ConclusieCard';
 
 const PreviewTabs = ({ formData, klachten, belangrijksteBevindingen, praktischeAdviezen, emojiSize }) => {
   const [activeTab, setActiveTab] = useState('voorblad');
-  const activeClass = 'bg-blue-600 text-white';
-  const inactiveClass = 'bg-blue-200 text-blue-700';
+  const activeClass = 'bg-arkin-secondary text-white';
+  const inactiveClass = 'bg-arkin-secondary/20 text-arkin-primary';
 
   const tabs = [
     {

@@ -78,7 +78,7 @@ const AuthForm = () => {
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-arkin-secondary hover:bg-arkin-primary-light text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               disabled={loading}
             >
               {loading ? 'Laden...' : (isLogin ? 'Inloggen' : 'Registreren')}
@@ -86,7 +86,7 @@ const AuthForm = () => {
             <button
               type="button"
               onClick={() => setIsLogin(!isLogin)}
-              className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+              className="inline-block align-baseline font-bold text-sm text-arkin-secondary hover:text-arkin-primary"
               disabled={loading}
             >
               {isLogin ? 'Nog geen account? Registreer hier.' : 'Al een account? Log hier in.'}

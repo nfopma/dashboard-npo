@@ -38,7 +38,7 @@ const BehandelaarInvoerDashboard = ({
         <p className="text-red-500">Geen patiënt geselecteerd.</p>
         <button
           onClick={onCloseDashboard}
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md flex items-center mx-auto"
+          className="mt-4 px-4 py-2 bg-arkin-secondary text-white rounded-md flex items-center mx-auto"
         >
           <ArrowLeftCircle className="mr-2" size={18} />
           Terug naar overzicht
@@ -123,7 +123,7 @@ const BehandelaarInvoerDashboard = ({
                 <ChevronLeft className="mr-2" size={18} /> Vorige
               </button>
               <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center disabled:opacity-50"
+                className="px-4 py-2 bg-arkin-secondary text-white rounded-md flex items-center disabled:opacity-50"
                 onClick={nextSection}
                 disabled={activeSection === sections[sections.length - 1].id}
               >
