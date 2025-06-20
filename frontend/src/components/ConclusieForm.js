@@ -38,9 +38,9 @@ const ConclusieForm = ({ formData, updateFormData, addBevinding, removeBevinding
           onChange={(e) => updateFormData('conclusie', 'dsmClassificatie', e.target.value)}
         ></textarea>
 
-        <div className="bg-blue-50 p-3 rounded-md mt-2 flex items-start">
-          <HelpCircle className="text-blue-500 mr-2 flex-shrink-0 mt-1" size={18} />
-          <p className="text-sm text-blue-700">
+        <div className="bg-arkin-secondary/20 p-3 rounded-md mt-2 flex items-start">
+          <HelpCircle className="text-arkin-secondary mr-2 flex-shrink-0 mt-1" size={18} />
+          <p className="text-sm text-arkin-primary">
             Specificeer de DSM-5-TR classificatie op basis van de neuropsychologische bevindingen. Vermeld zowel de diagnostische code als de volledige beschrijving.
           </p>
         </div> {/* Verwijderde de extra </p> tag hier */}

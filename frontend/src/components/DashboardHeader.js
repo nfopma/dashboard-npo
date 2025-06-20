@@ -19,13 +19,13 @@ const DashboardHeader = ({
   };
 
   return (
-    <header className="bg-blue-700 text-white p-4 no-print">
+    <header className="bg-arkin-primary text-white p-4 no-print">
       <div className="container mx-auto flex flex-col sm:flex-row flex-wrap justify-between items-start sm:items-center space-y-2 sm:space-y-0">
         <div className="flex items-center">
           {onCloseDashboard && (
             <button 
               onClick={onCloseDashboard} 
-              className="mr-4 p-2 rounded-full hover:bg-blue-600 transition-colors"
+              className="mr-4 p-2 rounded-full hover:bg-arkin-primary-light transition-colors"
               title="Terug naar patiëntenoverzicht"
             >
               <ArrowLeftCircle size={24} />
@@ -33,7 +33,7 @@ const DashboardHeader = ({
           )}
           <div>
             <h1 className="text-2xl font-bold">Neuropsychologisch Dashboard</h1>
-            {showPatientName && <p className="text-sm text-blue-200">{showPatientName}</p>}
+            {showPatientName && <p className="text-sm text-arkin-secondary">{showPatientName}</p>}
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2 sm:space-x-4">
@@ -57,7 +57,7 @@ const DashboardHeader = ({
             )}
           </button>
           <button
-            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-md flex items-center"
+            className="px-4 py-2 bg-arkin-secondary hover:bg-arkin-primary-light rounded-md flex items-center"
             onClick={handleSave}
           >
             <Save className="mr-2" size={18} />

@@ -4,7 +4,7 @@ import { getEmojiSizeClass, getEmojiLabel } from '../../utils/emojiUtils';
 const PatientInfoCard = ({ formData, klachten, emojiSize }) => {
   return (
     <div className="bg-gray-100 p-4 rounded-lg">
-      <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+      <div className="mt-4 p-4 bg-arkin-secondary/20 rounded-lg">
         <h3 className="font-bold mb-2 flex items-center">
           <span className={`mr-2 ${getEmojiSizeClass(emojiSize, 'header')}`}>📝</span>
           Patiëntgegevens

@@ -5,7 +5,13 @@ module.exports = {
     "./public/index.html",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'arkin-primary': '#5e2d79',
+        'arkin-primary-light': '#7e3f95',
+        'arkin-secondary': '#1eb9c4'
+      }
+    },
   },
   plugins: [],
 }

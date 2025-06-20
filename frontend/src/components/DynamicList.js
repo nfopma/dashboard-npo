@@ -23,7 +23,7 @@ const DynamicList = ({
           {title}
         </h3>
         <button
-          className="text-blue-600 flex items-center text-sm"
+          className="text-arkin-secondary flex items-center text-sm"
           onClick={addHandler}
         >
           <Plus size={16} className="mr-1" />
@@ -65,9 +65,9 @@ const DynamicList = ({
       ))}
 
       {helpText && (
-        <div className="bg-blue-50 p-3 rounded-md mt-2 flex items-start">
-          <HelpCircle className="text-blue-500 mr-2 flex-shrink-0 mt-1" size={18} />
-          <p className="text-sm text-blue-700">
+        <div className="bg-arkin-secondary/20 p-3 rounded-md mt-2 flex items-start">
+          <HelpCircle className="text-arkin-secondary mr-2 flex-shrink-0 mt-1" size={18} />
+          <p className="text-sm text-arkin-primary">
             {helpText}
           </p>
         </div>
